@@ -1,30 +1,51 @@
+const playerCount = 4;
 let players = [];
 let scores = [];
 
-function loadCSV() {
-  const csvFile = document.getElementById('round').value;
+const colors = ['blue', 'red', 'green', 'purple'];
 
-  Papa.parse(csvFile, {
-    download: true,
-    header: true,
-    complete: function(results) {
-      players = results.data.filter(p => p['名前']); // 空行防止
-      scores = players.map(() => ({ correct: 0, wrong: 0 }));
-      renderPlayers();
+window.onload = () => {
+  const inputContainer = document.getElementById("player-inputs");
+  for (let i = 0; i < playerCount; i++) {
+    inputContainer.innerHTML += `
+      <div>
+        <h3>プレイヤー${i + 1}</h3>
+        <label>名前: <input type="text" name="name${i}" required></label><br>
+        <label>学校: <input type="text" name="school${i}" required></label><br>
+        <label>色:
+          <select name="color${i}">
+            ${colors.map(c => `<option value="${c}">${c}</option>`).join('')}
+          </select>
+        </label>
+      </div><hr>
+    `;
+  }
+
+  document.getElementById("player-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    players = [];
+    for (let i = 0; i < playerCount; i++) {
+      const name = this[`name${i}`].value;
+      const school = this[`school${i}`].value;
+      const color = this[`color${i}`].value;
+      players.push({ name, school, color });
     }
+    scores = players.map(() => ({ correct: 0, wrong: 0 }));
+    this.parentElement.style.display = "none";
+    document.getElementById("players").style.display = "flex";
+    renderPlayers();
   });
-}
+};
 
 function renderPlayers() {
-  const container = document.getElementById('players');
+  const container = document.getElementById("players");
   container.innerHTML = '';
-
   players.forEach((p, i) => {
-    const playerDiv = document.createElement('div');
-    playerDiv.className = `player ${p['色']}`;
+    const playerDiv = document.createElement("div");
+    playerDiv.className = `player ${p.color}`;
     playerDiv.innerHTML = `
-      <h2>${p['名前']}</h2>
-      <h4>${p['学校']}</h4>
+      <h2>${p.name}</h2>
+      <h4>${p.school}</h4>
       <div id="rank-${i}">-位</div>
       <div class="score" id="score-${i}">0◯ 0×</div>
       <div id="lose-${i}" style="color:red; font-weight:bold;"></div>
@@ -35,7 +56,6 @@ function renderPlayers() {
     `;
     container.appendChild(playerDiv);
   });
-
   updateRanking();
 }
 
@@ -44,9 +64,9 @@ function updateDisplay(i) {
   const scoreDiv = document.getElementById(`score-${i}`);
   const loseDiv = document.getElementById(`lose-${i}`);
   if (score.wrong >= 2) {
-    loseDiv.textContent = 'LOSE';
+    loseDiv.textContent = "LOSE";
   } else {
-    loseDiv.textContent = '';
+    loseDiv.textContent = "";
   }
   scoreDiv.textContent = `${score.correct}◯ ${score.wrong}×`;
   updateRanking();
@@ -71,6 +91,3 @@ function updateRanking() {
     rankDiv.textContent = `${rank + 1}位`;
   });
 }
-
-// 初回読み込み
-window.onload = () => loadCSV();
