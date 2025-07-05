@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>クイズ得点表示</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- PapaParse ライブラリ（CSV読み込み用） -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+  <h1>クイズ得点表示</h1>
+
+  <label for="round">ラウンド選択：</label>
+  <select id="round" onchange="loadCSV()">
+    <option value="players.csv">1st Round</option>
+    <!-- ラウンドを増やす場合はCSVファイルを追加 -->
+    <!-- <option value="round2.csv">2nd Round</option> -->
+  </select>
+
+  <div id="players"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
