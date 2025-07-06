@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>問題管理ページ</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f8f4fc;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #a875ac;
+      margin-bottom: 20px;
+    }
+
+    #question-list {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .question-item {
+      padding: 10px;
+      margin-bottom: 8px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .question-item:hover {
+      background-color: #f0e6ff;
+    }
+
+    .selected {
+      background-color: #d0b3ff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>問題管理ページ</h1>
+  <div id="question-list">読み込み中...</div>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
+
+    async function fetchCSV() {
+      const res = await fetch(CSV_URL);
+      const text = await res.text();
+      return text.trim().split("\n").map(row => row.split(","));
+    }
+
+    function renderQuestions(data) {
+      const container = document.getElementById("question-list");
+      container.innerHTML = "";
+
+      const current = parseInt(localStorage.getItem("currentQuestionNumber"));
+
+      for (let i = 1; i < data.length; i++) {
+        const question = data[i][1];
+        const div = document.createElement("div");
+        div.className = "question-item";
+        if (i === current) div.classList.add("selected");
+
+        div.innerHTML = `<strong>${i}.</strong> ${question}`;
+        div.onclick = () => {
+          localStorage.setItem("currentQuestionNumber", i);
+          renderQuestions(data);  // 再描画して選択状態を反映
+        };
+        container.appendChild(div);
+      }
+    }
+
+    fetchCSV().then(renderQuestions);
+  </script>
+</body>
+</html>
