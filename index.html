@@ -13,7 +13,7 @@
 
   <!-- ボタン群 -->
   <button id="next-button">▶️ 次へ</button>
-  <button id="reset-button">🔁 スコアリセット</button> <!-- 🔽 追加 -->
+  <button id="reset-button">🔁 スコアリセット</button>
 
   <!-- プレイヤーカード -->
   <div id="players"></div>
@@ -22,48 +22,64 @@
     const bc = new BroadcastChannel("score_channel");
     const players = [];
 
-    // プレイヤー表示＋スコア更新処理
     bc.onmessage = (event) => {
       const data = event.data;
 
+      // ✅ 問題表示
       if (data.type === "question") {
         const display = document.getElementById("question-display");
         display.innerHTML = `<strong>Q:</strong> ${data.q}<br><strong>A:</strong> ${data.a}`;
         return;
       }
 
-      if (!players[data.index]) {
-        players[data.index] = data;
+      const i = data.index;
+
+      // ✅ すでに存在するプレイヤーの更新
+      if (players[i]) {
+        players[i].correct = data.correct;
+        players[i].wrong = data.wrong;
+        players[i].lose = data.lose;
+      } else {
+        // 初めてのプレイヤー登録
+        players[i] = {
+          name: data.name,
+          school: data.school,
+          rank: data.rank,
+          color: data.color,
+          correct: data.correct,
+          wrong: data.wrong,
+          lose: data.lose
+        };
+
         const container = document.getElementById("players");
         const div = document.createElement("div");
-        div.id = `player-${data.index}`;
+        div.id = `player-${i}`;
         div.className = `player ${data.color}`;
         div.innerHTML = `
           <h2>${data.name}</h2>
           <h4>${data.school}</h4>
           <div>${data.rank}位</div>
-          <div class="score" id="score-${data.index}">0○ 0×</div>
-          <div id="lose-${data.index}" style="color:red; font-weight:bold;"></div>
+          <div class="score" id="score-${i}">0○ 0×</div>
+          <div id="lose-${i}" style="color:red; font-weight:bold;"></div>
         `;
         container.appendChild(div);
       }
 
-      // スコア更新
-      document.getElementById(`score-${data.index}`).textContent =
+      // ✅ スコア表示を更新
+      document.getElementById(`score-${i}`).textContent =
         `${data.correct}○ ${data.wrong}×`;
-
-      document.getElementById(`lose-${data.index}`).textContent =
+      document.getElementById(`lose-${i}`).textContent =
         data.lose ? "LOSE" : "";
     };
 
-    // 次へボタン
+    // ✅ 次へボタン
     document.getElementById("next-button").addEventListener("click", () => {
       let current = parseInt(localStorage.getItem("currentQuestionNumber") || "0");
       current += 1;
       localStorage.setItem("currentQuestionNumber", current.toString());
     });
 
-    // 🔽 スコアリセットボタン
+    // ✅ スコアリセットボタン
     document.getElementById("reset-button").addEventListener("click", () => {
       for (let i = 0; i < players.length; i++) {
         if (!players[i]) continue;
