@@ -3,20 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <title>クイズ表示画面</title>
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>クイズ表示画面</h1>
 
-  <!-- 問題文と答えの表示 -->
+  <!-- 問題文と答え -->
   <div id="question-display">（問題はまだ表示されていません）</div>
 
-  <!-- プレイヤーカードの表示 -->
+  <!-- プレイヤーカード -->
   <div id="players"></div>
 
-  <!-- エラーメッセージ -->
-  <div id="error-message" style="color:red; font-weight:bold;"></div>
+  <script>
+    const bc = new BroadcastChannel("score_channel");
+    const players = [];
 
-  <script src="script.js"></script>
+    bc.onmessage = (event) => {
+      const data = event.data;
+
+      // ✅ 問題と答えの表示
+      if (data.type === "question") {
+        const display = document.getElementById("question-display");
+        display.innerHTML = `<strong>Q:</strong> ${data.q}<br><strong>A:</strong> ${data.a}`;
+        return;
+      }
+
+      // ✅ プレイヤーが初登場の場合
+      if (!players[data.index]) {
+        players[data.index] = data;
+
+        const container = document.getElementById("players");
+        const div = document.createElement("div");
+        div.id = `player-${data.index}`;
+        div.className = `player ${data.color}`;
+        div.innerHTML = `
+          <h2>${data.name}</h2>
+          <h4>${data.school}</h4>
+          <div>${data.rank}位</div>
+          <div class="score" id="score-${data.index}">0○ 0×</div>
+          <div id="lose-${data.index}" style="color:red; font-weight:bold;"></div>
+        `;
+        container.appendChild(div);
+      }
+
+      // ✅ スコア更新
+      document.getElementById(`score-${data.index}`).textContent =
+        `${data.correct}○ ${data.wrong}×`;
+
+      document.getElementById(`lose-${data.index}`).textContent =
+        data.lose ? "LOSE" : "";
+    };
+  </script>
 </body>
 </html>
