@@ -2,17 +2,20 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>表示画面</title>
+  <title>クイズ表示画面</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>クイズ表示画面</h1>
+
+  <!-- 問題文の表示 -->
   <div id="question-display">（問題はまだ表示されていません）</div>
-  <div id="players" style="display: none;"></div>
-  <form id="player-form">
-    <div id="player-inputs"></div>
-    <button type="submit">開始</button>
-  </form>
+
+  <!-- プレイヤーカードの表示 -->
+  <div id="players"></div>
+
+  <!-- エラーメッセージ（必要に応じて） -->
+  <div id="error-message" style="color:red; font-weight:bold;"></div>
 
   <script src="script.js"></script>
 </body>
