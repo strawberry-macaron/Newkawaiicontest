@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>クイズ画面</title>
+  <style>
+    #question-display {
+      margin-top: 50px;
+      font-size: 24px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>クイズ画面</h1>
+  <div id="question-display">（問題はまだ表示されていません）</div>
+
+  <script>
+    function updateQuestion() {
+      const q = localStorage.getItem("currentQuestion");
+      const display = document.getElementById("question-display");
+      display.textContent = q ? q : "（問題はまだ表示されていません）";
+    }
+
+    // ページ読み込み＆10秒ごとにチェック
+    updateQuestion();
+    setInterval(updateQuestion, 1000);
+  </script>
+</body>
+</html>
