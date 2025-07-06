@@ -3,15 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>クイズ表示画面</title>
-  <link rel="stylesheet" href="index.css"> <!-- 外部CSSファイルを読み込み -->
+  <link rel="stylesheet" href="style.css"> <!-- 外部CSSを適用 -->
 </head>
 <body>
   <h1>クイズ表示画面</h1>
-  <div id="question">（問題はまだ表示されていません）</div>
 
-  <div class="players" id="players">
-    <!-- プレイヤー要素はJSで動的に生成されます -->
-  </div>
+  <!-- 問題文表示 -->
+  <div id="question-display">（問題はまだ表示されていません）</div>
+
+  <!-- プレイヤー入力フォーム -->
+  <form id="player-form">
+    <div id="player-inputs"></div>
+    <button type="submit">開始</button>
+  </form>
+
+  <!-- プレイヤーカード表示エリア -->
+  <div id="players" style="display: none;"></div>
 
   <script src="script.js"></script>
 </body>
