@@ -55,10 +55,10 @@ function renderPlayers() {
       <h2>${p.name}</h2>
       <h4>${p.school}</h4>
       <div id="rank-${i}">${p.rank}位</div>
-      <div class="score" id="score-${i}">0◯ 0×</div>
+      <div class="score" id="score-${i}">0○ 0×</div>
       <div id="lose-${i}" style="color:red; font-weight:bold;"></div>
       <div class="buttons">
-        <button onclick="addCorrect(${i})">◯ 正解</button>
+        <button onclick="addCorrect(${i})">○ 正解</button>
         <button onclick="addWrong(${i})">× 誤答</button>
       </div>
     `;
@@ -75,7 +75,7 @@ function updateDisplay(i) {
   } else {
     loseDiv.textContent = "";
   }
-  scoreDiv.textContent = `${score.correct}◯ ${score.wrong}×`;
+  scoreDiv.textContent = `${score.correct}○ ${score.wrong}×`;
 }
 
 function addCorrect(i) {
@@ -109,10 +109,10 @@ async function updateQuestionDisplay() {
   const index = parseInt(qNum);
   const rows = await fetchCSV();
 
-  if (index > 0 && index < rows.length) {
+  if (index >= 0 && index < rows.length) {
     const questionText = rows[index][1];
     display.textContent = questionText;
   } else {
     display.textContent = "問題が見つかりません。";
   }
-}
+} 
