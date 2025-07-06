@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>操作画面</title>
+</head>
+<body>
+  <h1>操作画面</h1>
+  <textarea id="question" rows="5" cols="60" placeholder="ここに問題文を入力してください"></textarea><br>
+  <button onclick="showQuestion()">問題を表示</button>
+  <button onclick="clearQuestion()">非表示にする</button>
+
+  <script>
+    function showQuestion() {
+      const q = document.getElementById("question").value;
+      localStorage.setItem("currentQuestion", q);
+    }
+
+    function clearQuestion() {
+      localStorage.removeItem("currentQuestion");
+    }
+  </script>
+</body>
+</html>
