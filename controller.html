@@ -39,22 +39,73 @@
       font-size: 1.2em;
       margin-top: 10px;
     }
+
+    .player-registration {
+      margin: 40px auto;
+      max-width: 900px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .player-registration h2 {
+      text-align: center;
+    }
+
+    .player-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .player-box {
+      flex: 1 1 200px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      background-color: #fefefe;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
   <h1>クイズ操作画面</h1>
 
+  <!-- 問題操作 -->
   <div class="question-box">
     <div id="question-text">（問題はまだ表示されていません）</div>
     <div class="counter">現在の問題番号: <span id="current-number">0</span></div>
   </div>
-
   <button onclick="changeQuestion(-1)">前へ</button>
   <button onclick="changeQuestion(1)">次へ</button>
 
+  <!-- プレイヤー登録 -->
+  <div class="player-registration">
+    <h2>36人のプレイヤー登録</h2>
+    <form id="player-form">
+      <div class="player-group" id="player-inputs"></div>
+      <button type="submit">保存して選択へ</button>
+    </form>
+  </div>
+
+  <!-- 出場者選択 -->
+  <div class="player-registration">
+    <h2>ラウンド出場者（9人）選択</h2>
+    <form id="round-form">
+      <div class="player-group" id="player-select"></div>
+      <button type="submit">ラウンド出場者を保存</button>
+    </form>
+  </div>
+
   <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
-
     let questions = [];
 
     async function fetchCSV() {
@@ -69,6 +120,8 @@
         localStorage.setItem("currentQuestionNumber", "0");
       }
       updateQuestionDisplay();
+      generatePlayerInputs();
+      generatePlayerSelection();
     }
 
     function changeQuestion(delta) {
@@ -84,9 +137,61 @@
     function updateQuestionDisplay() {
       const index = parseInt(localStorage.getItem("currentQuestionNumber"));
       document.getElementById("current-number").textContent = index;
-      const questionText = questions[index]?.[1] || "（データなし）";
+      const questionText = questions[index]?.[2] || "（データなし）";
       document.getElementById("question-text").textContent = questionText;
     }
+
+    function generatePlayerInputs() {
+      const container = document.getElementById("player-inputs");
+      for (let i = 0; i < 36; i++) {
+        container.innerHTML += `
+          <div class="player-box">
+            <h4>プレイヤー${i + 1}</h4>
+            <input type="text" name="name${i}" placeholder="名前" required>
+            <input type="text" name="school${i}" placeholder="学校" required>
+            <input type="number" name="rank${i}" min="1" max="100" placeholder="順位" required>
+          </div>
+        `;
+      }
+    }
+
+    document.getElementById("player-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const data = [];
+      for (let i = 0; i < 36; i++) {
+        const name = this[`name${i}`].value;
+        const school = this[`school${i}`].value;
+        const rank = parseInt(this[`rank${i}`].value);
+        data.push({ name, school, rank });
+      }
+      localStorage.setItem("allPlayers", JSON.stringify(data));
+      alert("プレイヤー情報を保存しました");
+      generatePlayerSelection();
+    });
+
+    function generatePlayerSelection() {
+      const players = JSON.parse(localStorage.getItem("allPlayers") || "[]");
+      const container = document.getElementById("player-select");
+      container.innerHTML = "";
+      players.forEach((p, i) => {
+        container.innerHTML += `
+          <label><input type="checkbox" name="p${i}" value="${i}"> ${p.name}（${p.school}）</label><br>
+        `;
+      });
+    }
+
+    document.getElementById("round-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const selected = Array.from(this.querySelectorAll("input[type=checkbox]:checked")).map(cb => parseInt(cb.value));
+      const all = JSON.parse(localStorage.getItem("allPlayers") || "[]");
+      if (selected.length !== 9) {
+        alert("9人ちょうど選んでください");
+        return;
+      }
+      const roundPlayers = selected.map(i => all[i]);
+      localStorage.setItem("currentPlayers", JSON.stringify(roundPlayers));
+      alert("ラウンド出場者を保存しました");
+    });
 
     window.onload = init;
   </script>
