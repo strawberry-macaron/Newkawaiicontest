@@ -1,0 +1,150 @@
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Arial', sans-serif;
+  background-color: #fffafc;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  color: #a875ac;
+  margin-bottom: 20px;
+}
+
+form {
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #fdf4ff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 8px rgba(200, 200, 200, 0.2);
+}
+
+form div {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin: 5px 0;
+}
+
+input[type="text"], select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 90%;
+  max-width: 300px;
+}
+
+button[type="submit"] {
+  background-color: #bde0fe;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover {
+  background-color: #a2d2ff;
+}
+
+#players {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.player {
+  width: 180px;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(180, 180, 180, 0.2);
+  background-color: #ffffff;
+  transition: transform 0.2s ease;
+}
+
+.player:hover {
+  transform: scale(1.03);
+}
+
+.player h2 {
+  font-size: 1.3em;
+  margin-bottom: 5px;
+}
+
+.player h4 {
+  font-size: 0.9em;
+  margin-top: 0;
+  color: #555;
+}
+
+.score {
+  font-size: 1.4em;
+  margin: 10px 0;
+  font-weight: bold;
+  color: #444;
+}
+
+.buttons button {
+  font-size: 0.9em;
+  padding: 6px 12px;
+  margin: 4px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* 色別テーマ（パステルカラー） */
+.player.blue {
+  border: 4px solid #a2d2ff;
+  background-color: #e3f2ff;
+}
+
+.player.red {
+  border: 4px solid #ffc9de;
+  background-color: #ffeef3;
+}
+
+.player.green {
+  border: 4px solid #caffbf;
+  background-color: #f0fff5;
+}
+
+.player.purple {
+  border: 4px solid #d0b3ff;
+  background-color: #f5edff;
+}
+
+/* ◯ボタン */
+.buttons button:first-child {
+  background-color: #b9fbc0;
+}
+
+/* ×ボタン */
+.buttons button:last-child {
+  background-color: #ffb5a7;
+}
+
+.buttons button:hover {
+  opacity: 0.85;
+}
+
+/* 順位とLOSE表示 */
+div[id^="rank-"] {
+  font-size: 1em;
+  margin-top: 5px;
+  color: #888;
+}
+
+div[id^="lose-"] {
+  font-size: 1.2em;
+  color: #e63946;
+  font-weight: bold;
+}
