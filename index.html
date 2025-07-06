@@ -4,16 +4,52 @@
   <meta charset="UTF-8">
   <title>クイズ画面</title>
   <style>
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Arial', sans-serif;
+      background-color: #fffafc;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #a875ac;
+      margin-bottom: 20px;
+    }
+
     #question-display {
       margin-top: 50px;
       font-size: 24px;
       color: #333;
+      padding: 20px;
+      background-color: #fdf4ff;
+      border-radius: 10px;
+      max-width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .rank-box {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #666;
     }
   </style>
 </head>
 <body>
   <h1>クイズ画面</h1>
+
+  <!-- ✅ 問題文の表示エリア -->
   <div id="question-display">（問題はまだ表示されていません）</div>
+
+  <!-- ✅ プレイヤー順位表示エリア -->
+  <div class="rank-box">
+    <div id="rank-0">プレイヤー1：-位</div>
+    <div id="rank-1">プレイヤー2：-位</div>
+    <div id="rank-2">プレイヤー3：-位</div>
+    <div id="rank-3">プレイヤー4：-位</div>
+  </div>
 
   <script>
     function updateQuestion() {
@@ -22,9 +58,23 @@
       display.textContent = q ? q : "（問題はまだ表示されていません）";
     }
 
-    // ページ読み込み＆10秒ごとにチェック
+    function updateManualRanks() {
+      const ranks = JSON.parse(localStorage.getItem("manualRanks") || "[]");
+      ranks.forEach((rank, i) => {
+        const rankDiv = document.getElementById(`rank-${i}`);
+        if (rankDiv && rank) {
+          rankDiv.textContent = `プレイヤー${i + 1}：${rank}位`;
+        }
+      });
+    }
+
+    // 初期表示 & 毎秒更新
     updateQuestion();
-    setInterval(updateQuestion, 1000);
+    updateManualRanks();
+    setInterval(() => {
+      updateQuestion();
+      updateManualRanks();
+    }, 1000);
   </script>
 </body>
 </html>
