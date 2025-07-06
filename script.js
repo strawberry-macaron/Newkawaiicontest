@@ -88,6 +88,7 @@ function addWrong(i) {
   updateDisplay(i);
 }
 
+// CSV取得先
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
 
 async function fetchCSV() {
@@ -109,10 +110,12 @@ async function updateQuestionDisplay() {
   const index = parseInt(qNum);
   const rows = await fetchCSV();
 
-  if (index >= 0 && index < rows.length) {
-    const questionText = rows[index][1];
-    display.textContent = questionText;
+  if (index >= 1 && index < rows.length) {
+    const row = rows[index]; // index番目の行を取得（0はヘッダーなので除外）
+    const questionText = row[2] || "（問題なし）"; // C列
+    const answerText = row[3] || "（答えなし）";   // D列
+    display.innerHTML = `<strong>Q:</strong> ${questionText}<br><strong>A:</strong> ${answerText}`;
   } else {
     display.textContent = "問題が見つかりません。";
   }
-} 
+}
