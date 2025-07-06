@@ -67,6 +67,9 @@ button[type="submit"]:hover {
   box-shadow: 0 4px 8px rgba(180, 180, 180, 0.2);
   background-color: #ffffff;
   transition: transform 0.2s ease;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  text-align: center;
 }
 
 .player:hover {
@@ -101,27 +104,6 @@ button[type="submit"]:hover {
   transition: background-color 0.2s ease;
 }
 
-/* 色別テーマ（パステルカラー） */
-.player.blue {
-  border: 4px solid #a2d2ff;
-  background-color: #e3f2ff;
-}
-
-.player.red {
-  border: 4px solid #ffc9de;
-  background-color: #ffeef3;
-}
-
-.player.green {
-  border: 4px solid #caffbf;
-  background-color: #f0fff5;
-}
-
-.player.purple {
-  border: 4px solid #d0b3ff;
-  background-color: #f5edff;
-}
-
 /* ◯ボタン */
 .buttons button:first-child {
   background-color: #b9fbc0;
@@ -147,4 +129,35 @@ div[id^="lose-"] {
   font-size: 1.2em;
   color: #e63946;
   font-weight: bold;
+}
+
+/* ───── 順位別カラーテーマ ───── */
+.player.strawberry {
+  border: 4px solid #ff85a1;
+  background-color: #ffe0eb;
+}
+
+.player.candy {
+  border: 4px solid #ffb6c1;
+  background-color: #fff0f5;
+}
+
+.player.raspberry {
+  border: 4px solid #e63946;
+  background-color: #ffd1d9;
+}
+
+.player.iceblue {
+  border: 4px solid #a2d2ff;
+  background-color: #e3f2ff;
+}
+
+.player.pudding {
+  border: 4px solid #fff3b0;
+  background-color: #fffde6;
+}
+
+.player.mint {
+  border: 4px solid #caffbf;
+  background-color: #f0fff5;
 }
