@@ -11,8 +11,9 @@
   <!-- 問題文と答え -->
   <div id="question-display">（問題はまだ表示されていません）</div>
 
-  <!-- 🔽 追加：次へボタン -->
+  <!-- ボタン群 -->
   <button id="next-button">▶️ 次へ</button>
+  <button id="reset-button">🔁 スコアリセット</button> <!-- 🔽 追加 -->
 
   <!-- プレイヤーカード -->
   <div id="players"></div>
@@ -21,7 +22,7 @@
     const bc = new BroadcastChannel("score_channel");
     const players = [];
 
-    // ✅ 問題表示
+    // プレイヤー表示＋スコア更新処理
     bc.onmessage = (event) => {
       const data = event.data;
 
@@ -31,10 +32,8 @@
         return;
       }
 
-      // ✅ プレイヤー表示
       if (!players[data.index]) {
         players[data.index] = data;
-
         const container = document.getElementById("players");
         const div = document.createElement("div");
         div.id = `player-${data.index}`;
@@ -49,7 +48,7 @@
         container.appendChild(div);
       }
 
-      // ✅ スコア更新
+      // スコア更新
       document.getElementById(`score-${data.index}`).textContent =
         `${data.correct}○ ${data.wrong}×`;
 
@@ -57,11 +56,28 @@
         data.lose ? "LOSE" : "";
     };
 
-    // ✅ 次へボタンの処理
+    // 次へボタン
     document.getElementById("next-button").addEventListener("click", () => {
       let current = parseInt(localStorage.getItem("currentQuestionNumber") || "0");
       current += 1;
       localStorage.setItem("currentQuestionNumber", current.toString());
+    });
+
+    // 🔽 スコアリセットボタン
+    document.getElementById("reset-button").addEventListener("click", () => {
+      for (let i = 0; i < players.length; i++) {
+        if (!players[i]) continue;
+        bc.postMessage({
+          index: i,
+          name: players[i].name,
+          school: players[i].school,
+          rank: players[i].rank,
+          color: players[i].color,
+          correct: 0,
+          wrong: 0,
+          lose: false
+        });
+      }
     });
   </script>
 </body>
