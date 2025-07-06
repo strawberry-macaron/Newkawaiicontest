@@ -3,139 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>クイズ表示画面</title>
-  <style>
-    body {
-      font-family: 'Hiragino Kaku Gothic ProN', 'Arial', sans-serif;
-      background-color: #fffafc;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-
-    #question {
-      font-size: 1.5em;
-      margin-bottom: 40px;
-      padding: 20px;
-      background-color: #f8f8ff;
-      border-radius: 10px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
-
-    .players {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .player {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      border: 3px solid #aaa;
-      border-radius: 10px;
-      padding: 20px;
-      width: 60px;
-      background-color: #fff;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
-
-    .player:hover {
-      transform: scale(1.05);
-    }
-
-    .player h2, .player p {
-      margin: 0;
-      padding: 0;
-      font-size: 1em;
-    }
-
-    .strawberry { border-color: #ff4d88; background-color: #ffe0eb; }
-    .candy { border-color: #ff99bb; background-color: #ffeef4; }
-    .raspberry { border-color: #cc0033; background-color: #ffd6e0; }
-    .iceblue { border-color: #66ccff; background-color: #e6f7ff; }
-    .pudding { border-color: #f7c66c; background-color: #fff7da; }
-    .mint { border-color: #90ee90; background-color: #e6fff2; }
-  </style>
+  <link rel="stylesheet" href="style.css"> <!-- 外部CSSファイルを読み込み -->
 </head>
 <body>
   <h1>クイズ表示画面</h1>
   <div id="question">（問題はまだ表示されていません）</div>
 
   <div class="players" id="players">
-    <!-- プレイヤー要素はJSで動的に生成する方が効率的です -->
+    <!-- プレイヤー要素はJSで動的に生成されます -->
   </div>
 
-  <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
-
-    async function fetchCSV() {
-      const response = await fetch(CSV_URL);
-      const text = await response.text();
-      const rows = text.trim().split("\n").map(row => row.split(","));
-      return rows;
-    }
-
-    async function updateQuestion() {
-      const num = localStorage.getItem("currentQuestionNumber");
-      const display = document.getElementById("question");
-
-      if (!num) {
-        display.textContent = "（問題はまだ表示されていません）";
-        return;
-      }
-
-      const data = await fetchCSV();
-      const index = parseInt(num);
-      if (index > 0 && index < data.length) {
-        const questionText = data[index][1]; // 2列目（問題文）
-        display.textContent = questionText;
-      } else {
-        display.textContent = "問題が見つかりません。";
-      }
-    }
-
-    function getColorClass(rank) {
-      if (rank === 1) return 'strawberry';
-      if (rank === 2) return 'candy';
-      if (rank === 3 || rank === 4) return 'raspberry';
-      if (rank >= 5 && rank <= 12) return 'iceblue';
-      if (rank >= 13 && rank <= 24) return 'pudding';
-      if (rank >= 25 && rank <= 36) return 'mint';
-      return '';
-    }
-
-    // 仮のプレイヤーデータ
-    const players = [
-      { name: "プレイヤー1", rank: 1, school: "◯×高校", score: "30◯", wrong: "2×" },
-      { name: "プレイヤー2", rank: 2, school: "△口高校", score: "28◯", wrong: "1×" },
-      { name: "プレイヤー3", rank: 3, school: "☆高校", score: "20◯", wrong: "3×" },
-      { name: "プレイヤー4", rank: 13, school: "＃高校", score: "15◯", wrong: "LOSE" },
-      { name: "プレイヤー5", rank: 30, school: "＆％高校", score: "6◯", wrong: "1×" }
-    ];
-
-    function renderPlayers() {
-      const container = document.getElementById("players");
-      container.innerHTML = "";
-
-      players.forEach(p => {
-        const div = document.createElement("div");
-        const color = getColorClass(p.rank);
-        div.className = `player ${color}`;
-        div.innerHTML = `
-          <h2>${p.name}</h2>
-          <p>${p.rank}th</p>
-          <p>${p.school}</p>
-          <p>${p.score}</p>
-          <p>${p.wrong}</p>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    updateQuestion();
-    renderPlayers();
-    setInterval(updateQuestion, 1000);
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
