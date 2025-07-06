@@ -11,6 +11,9 @@
   <!-- 問題文と答え -->
   <div id="question-display">（問題はまだ表示されていません）</div>
 
+  <!-- 🔽 追加：次へボタン -->
+  <button id="next-button">▶️ 次へ</button>
+
   <!-- プレイヤーカード -->
   <div id="players"></div>
 
@@ -18,17 +21,17 @@
     const bc = new BroadcastChannel("score_channel");
     const players = [];
 
+    // ✅ 問題表示
     bc.onmessage = (event) => {
       const data = event.data;
 
-      // ✅ 問題と答えの表示
       if (data.type === "question") {
         const display = document.getElementById("question-display");
         display.innerHTML = `<strong>Q:</strong> ${data.q}<br><strong>A:</strong> ${data.a}`;
         return;
       }
 
-      // ✅ プレイヤーが初登場の場合
+      // ✅ プレイヤー表示
       if (!players[data.index]) {
         players[data.index] = data;
 
@@ -53,6 +56,13 @@
       document.getElementById(`lose-${data.index}`).textContent =
         data.lose ? "LOSE" : "";
     };
+
+    // ✅ 次へボタンの処理
+    document.getElementById("next-button").addEventListener("click", () => {
+      let current = parseInt(localStorage.getItem("currentQuestionNumber") || "0");
+      current += 1;
+      localStorage.setItem("currentQuestionNumber", current.toString());
+    });
   </script>
 </body>
 </html>
