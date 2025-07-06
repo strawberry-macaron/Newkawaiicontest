@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>操作画面</title>
+  <title>コントロール画面</title>
   <style>
     body {
       font-family: sans-serif;
@@ -11,118 +11,84 @@
       text-align: center;
     }
 
-    textarea {
-      width: 80%;
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
     button {
       margin: 5px;
-      padding: 8px 16px;
+      padding: 10px 20px;
       font-size: 16px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: none;
       cursor: pointer;
+      background-color: #a2d2ff;
     }
 
-    input[type="number"] {
-      width: 60px;
-      font-size: 16px;
-      margin: 5px;
+    button:hover {
+      background-color: #90caff;
     }
 
-    .rank-inputs {
-      margin-top: 30px;
-      background: #ffffff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      display: inline-block;
-    }
-
-    #currentQuestionDisplay {
-      margin: 20px 0;
-      font-size: 1.2em;
-      padding: 10px;
+    .question-box {
+      margin: 20px auto;
+      padding: 20px;
       background: #fff;
       border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      width: 80%;
+      max-width: 600px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .counter {
+      font-size: 1.2em;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h1>操作画面</h1>
+  <h1>クイズ操作画面</h1>
 
-  <!-- ✅ 現在の問題表示 -->
-  <div id="currentQuestionDisplay">（まだ読み込まれていません）</div>
-  <button onclick="prevQuestion()">← 前の問題</button>
-  <button onclick="nextQuestion()">次の問題 →</button>
-
-  <!-- ✅ 順位入力エリア -->
-  <div class="rank-inputs">
-    <h2>順位入力</h2>
-    <div>
-      <label>プレイヤー1：<input type="number" id="rank0" min="1"></label><br>
-      <label>プレイヤー2：<input type="number" id="rank1" min="1"></label><br>
-      <label>プレイヤー3：<input type="number" id="rank2" min="1"></label><br>
-      <label>プレイヤー4：<input type="number" id="rank3" min="1"></label><br>
-    </div>
-    <button onclick="saveRanks()">順位を保存</button>
+  <div class="question-box">
+    <div id="question-text">（問題はまだ表示されていません）</div>
+    <div class="counter">現在の問題番号: <span id="current-number">0</span></div>
   </div>
+
+  <button onclick="changeQuestion(-1)">前へ</button>
+  <button onclick="changeQuestion(1)">次へ</button>
 
   <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
 
     let questions = [];
-    let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "0");
 
     async function fetchCSV() {
-      const response = await fetch(CSV_URL);
-      const text = await response.text();
-      const rows = text.trim().split("\n").map(row => row.split(","));
-      return rows;
+      const res = await fetch(CSV_URL);
+      const text = await res.text();
+      return text.trim().split("\n").map(row => row.split(","));
     }
 
-    async function loadQuestions() {
-      const data = await fetchCSV();
-      questions = data;
-      updateDisplay();
-    }
-
-    function updateDisplay() {
-      const qDiv = document.getElementById("currentQuestionDisplay");
-      if (currentIndex > 0 && currentIndex < questions.length) {
-        const qText = questions[currentIndex][1]; // 2列目に問題文がある
-        qDiv.textContent = `【第${currentIndex}問】${qText}`;
-        localStorage.setItem("currentQuestionNumber", currentIndex);
-      } else {
-        qDiv.textContent = "（問題が見つかりません）";
+    async function init() {
+      questions = await fetchCSV();
+      if (!localStorage.getItem("currentQuestionNumber")) {
+        localStorage.setItem("currentQuestionNumber", "0");
       }
+      updateQuestionDisplay();
     }
 
-    function nextQuestion() {
-      currentIndex++;
-      updateDisplay();
+    function changeQuestion(delta) {
+      let current = parseInt(localStorage.getItem("currentQuestionNumber") || "0");
+      const maxIndex = questions.length - 1;
+      current += delta;
+      if (current < 0) current = 0;
+      if (current > maxIndex) current = maxIndex;
+      localStorage.setItem("currentQuestionNumber", current);
+      updateQuestionDisplay();
     }
 
-    function prevQuestion() {
-      if (currentIndex > 1) currentIndex--;
-      updateDisplay();
+    function updateQuestionDisplay() {
+      const index = parseInt(localStorage.getItem("currentQuestionNumber"));
+      document.getElementById("current-number").textContent = index;
+      const questionText = questions[index]?.[1] || "（データなし）";
+      document.getElementById("question-text").textContent = questionText;
     }
 
-    function saveRanks() {
-      const ranks = [];
-      for (let i = 0; i < 4; i++) {
-        const rank = document.getElementById(`rank${i}`).value;
-        ranks.push(rank);
-      }
-      localStorage.setItem("manualRanks", JSON.stringify(ranks));
-      alert("順位を保存しました！");
-    }
-
-    // 初期読み込み
-    loadQuestions();
+    window.onload = init;
   </script>
 </body>
 </html>
