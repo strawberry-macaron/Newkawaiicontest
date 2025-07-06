@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クイズ画面</title>
+  <title>クイズ表示画面</title>
   <style>
     body {
       font-family: 'Hiragino Kaku Gothic ProN', 'Arial', sans-serif;
@@ -12,69 +12,91 @@
       text-align: center;
     }
 
-    h1 {
-      color: #a875ac;
-      margin-bottom: 20px;
-    }
-
-    #question-display {
-      margin-top: 50px;
-      font-size: 24px;
-      color: #333;
+    #question {
+      font-size: 1.5em;
+      margin-bottom: 40px;
       padding: 20px;
-      background-color: #fdf4ff;
+      background-color: #f8f8ff;
       border-radius: 10px;
-      max-width: 80%;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
 
-    .rank-box {
-      margin-top: 30px;
-      font-size: 20px;
-      color: #666;
+    .players {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
     }
+
+    .player {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      border: 3px solid #aaa;
+      border-radius: 10px;
+      padding: 20px;
+      width: 60px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .player.red { border-color: #ff4d6d; background-color: #ffeef3; }
+    .player.blue { border-color: #4da6ff; background-color: #e6f0ff; }
+    .player h2, .player p { margin: 0; padding: 0; font-size: 1em; }
   </style>
 </head>
 <body>
-  <h1>クイズ画面</h1>
+  <h1>クイズ表示画面</h1>
+  <div id="question">（問題はまだ表示されていません）</div>
 
-  <!-- ✅ 問題文の表示エリア -->
-  <div id="question-display">（問題はまだ表示されていません）</div>
-
-  <!-- ✅ プレイヤー順位表示エリア -->
-  <div class="rank-box">
-    <div id="rank-0">プレイヤー1：-位</div>
-    <div id="rank-1">プレイヤー2：-位</div>
-    <div id="rank-2">プレイヤー3：-位</div>
-    <div id="rank-3">プレイヤー4：-位</div>
+  <div class="players" id="players">
+    <div class="player red">
+      <h2>プレイヤー1</h2>
+      <p>1st</p>
+      <p>○×高校</p>
+      <p>30◯</p>
+      <p>2×</p>
+    </div>
+    <div class="player blue">
+      <h2>プレイヤー2</h2>
+      <p>10th</p>
+      <p>△口高校</p>
+      <p>00◯</p>
+      <p>LOSE</p>
+    </div>
+    <!-- 必要に応じてプレイヤー追加 -->
   </div>
 
   <script>
-    function updateQuestion() {
-      const q = localStorage.getItem("currentQuestion");
-      const display = document.getElementById("question-display");
-      display.textContent = q ? q : "（問題はまだ表示されていません）";
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
+
+    async function fetchCSV() {
+      const response = await fetch(CSV_URL);
+      const text = await response.text();
+      const rows = text.trim().split("\n").map(row => row.split(","));
+      return rows;
     }
 
-    function updateManualRanks() {
-      const ranks = JSON.parse(localStorage.getItem("manualRanks") || "[]");
-      ranks.forEach((rank, i) => {
-        const rankDiv = document.getElementById(`rank-${i}`);
-        if (rankDiv && rank) {
-          rankDiv.textContent = `プレイヤー${i + 1}：${rank}位`;
-        }
-      });
+    async function updateQuestion() {
+      const num = localStorage.getItem("currentQuestionNumber");
+      const display = document.getElementById("question");
+
+      if (!num) {
+        display.textContent = "（問題はまだ表示されていません）";
+        return;
+      }
+
+      const data = await fetchCSV();
+      const index = parseInt(num);
+      if (index > 0 && index < data.length) {
+        const questionText = data[index][1]; // 2列目（問題文）
+        display.textContent = questionText;
+      } else {
+        display.textContent = "問題が見つかりません。";
+      }
     }
 
-    // 初期表示 & 毎秒更新
     updateQuestion();
-    updateManualRanks();
-    setInterval(() => {
-      updateQuestion();
-      updateManualRanks();
-    }, 1000);
+    setInterval(updateQuestion, 1000);
   </script>
 </body>
 </html>
