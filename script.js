@@ -2,7 +2,7 @@ const playerCount = 4;
 let players = [];
 let scores = [];
 
-const bc = new BroadcastChannel("score_channel");  // ← 追加：BroadcastChannel定義
+const bc = new BroadcastChannel("score_channel");
 
 window.onload = () => {
   const inputContainer = document.getElementById("player-inputs");
@@ -82,7 +82,6 @@ function updateDisplay(i) {
 
   scoreDiv.textContent = `${score.correct}○ ${score.wrong}×`;
 
-  // ✅ 表示ページへ送信
   bc.postMessage({
     index: i,
     name: players[i].name,
@@ -105,7 +104,7 @@ function addWrong(i) {
   updateDisplay(i);
 }
 
-// ✅ CSV取得処理（問題文表示）
+// ✅ CSV取得処理
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
 
 async function fetchCSV() {
@@ -128,10 +127,13 @@ async function updateQuestionDisplay() {
   const rows = await fetchCSV();
 
   if (index >= 1 && index < rows.length) {
-    const row = rows[index]; // index番目の行を取得（0はヘッダーなので除外）
-    const questionText = row[2] || "（問題なし）"; // C列
-    const answerText = row[3] || "（答えなし）";   // D列
-    display.innerHTML = `<strong>Q:</strong> ${questionText}<br><strong>A:</strong> ${answerText}`;
+    const row = rows[index];
+    const questionText = (row[2] || "").trim() || "（問題なし）"; // C列
+    const answerText = (row[3] || "").trim() || "（答えなし）";   // D列
+    display.innerHTML = `
+      <strong>Q:</strong> ${questionText}<br>
+      <strong>A:</strong> ${answerText}
+    `;
   } else {
     display.textContent = "問題が見つかりません。";
   }
