@@ -2,6 +2,8 @@ const playerCount = 4;
 let players = [];
 let scores = [];
 
+const bc = new BroadcastChannel("score_channel");  // ← 追加：BroadcastChannel定義
+
 window.onload = () => {
   const inputContainer = document.getElementById("player-inputs");
 
@@ -70,12 +72,27 @@ function updateDisplay(i) {
   const score = scores[i];
   const scoreDiv = document.getElementById(`score-${i}`);
   const loseDiv = document.getElementById(`lose-${i}`);
-  if (score.wrong >= 2) {
+  const isLose = score.wrong >= 2;
+
+  if (isLose) {
     loseDiv.textContent = "LOSE";
   } else {
     loseDiv.textContent = "";
   }
+
   scoreDiv.textContent = `${score.correct}○ ${score.wrong}×`;
+
+  // ✅ 表示ページへ送信
+  bc.postMessage({
+    index: i,
+    name: players[i].name,
+    school: players[i].school,
+    rank: players[i].rank,
+    color: players[i].color,
+    correct: score.correct,
+    wrong: score.wrong,
+    lose: isLose
+  });
 }
 
 function addCorrect(i) {
@@ -88,7 +105,7 @@ function addWrong(i) {
   updateDisplay(i);
 }
 
-// CSV取得先
+// ✅ CSV取得処理（問題文表示）
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
 
 async function fetchCSV() {
