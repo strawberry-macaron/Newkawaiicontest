@@ -1,0 +1,96 @@
+/* round3.css */
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+  background-color: #fceff9;
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  color: #c77dff;
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+#players {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.player {
+  width: 180px;
+  border-radius: 15px;
+  padding: 15px;
+  background-color: #e3f2fd;
+  border: 3px solid #bde0fe;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.player h2 {
+  font-size: 1.2em;
+  margin: 5px 0;
+}
+
+.player h4 {
+  font-size: 0.9em;
+  margin: 2px 0;
+  color: #555;
+}
+
+.score, .penalty {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 8px 0;
+}
+
+.status {
+  font-size: 1.1em;
+  color: #d6336c;
+  font-weight: bold;
+}
+
+.status.bomb {
+  background-color: #ffd6e0;
+  border-radius: 8px;
+  padding: 3px 6px;
+}
+
+.status.lose {
+  color: red;
+}
+
+.status.win {
+  color: #2b9348;
+}
+
+.buttons button {
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.correct {
+  background-color: #caffbf;
+}
+
+.wrong {
+  background-color: #ffc9de;
+}
+
+.with-bomb {
+  background-color: #ffadad;
+}
+
+button:hover {
+  opacity: 0.85;
+}
