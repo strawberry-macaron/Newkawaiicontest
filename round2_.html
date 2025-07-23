@@ -60,11 +60,17 @@
   <div id="players"></div>
 
   <script>
-    const players = [
-      { name: "プレイヤー1", school: "A高校", rank: 1, color: "mint", correct: 0, wrong: 0, lose: false },
-      { name: "プレイヤー2", school: "B高校", rank: 2, color: "strawberry", correct: 0, wrong: 0, lose: false },
-      // 必要に応じて追加
-    ];
+    const players = [];
+    const bc = new BroadcastChannel("score_channel");
+
+    bc.onmessage = (event) => {
+      const received = event.data;
+      players.length = 0;
+      received.forEach(p => {
+        players.push({ ...p, correct: 0, wrong: 0, lose: false });
+      });
+      renderPlayers();
+    };
 
     function renderPlayers() {
       const container = document.getElementById("players");
@@ -111,8 +117,6 @@
       document.getElementById(`score-${i}`).textContent = `${players[i].correct}○ ${players[i].wrong}×`;
       document.getElementById(`lose-${i}`).textContent = players[i].lose ? "LOSE" : "";
     }
-
-    renderPlayers();
   </script>
 </body>
 </html>
