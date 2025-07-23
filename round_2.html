@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>2R 表示画面</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
@@ -14,7 +13,29 @@
     h1 {
       color: #c77dff;
     }
-    #players {
+    .input-form {
+      margin: 20px auto;
+      width: 90%;
+      max-width: 1000px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+    .input-box {
+      background: #ffffff;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 200px;
+    }
+    .input-box input {
+      width: 100%;
+      margin: 5px 0;
+      padding: 6px;
+      font-size: 14px;
+    }
+    .player-cards {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -30,9 +51,6 @@
       writing-mode: vertical-rl;
       text-orientation: mixed;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-    }
-    .player h2 {
-      font-size: 1.2em;
     }
     .score {
       font-weight: bold;
@@ -55,29 +73,50 @@
   </style>
 </head>
 <body>
-  <h1>2R 表示画面</h1>
-  <div id="question-display">(問題がまだ表示されていません)</div>
-  <div id="players"></div>
+  <h1>2R：プレイヤー入力と表示</h1>
+
+  <form id="input-form" class="input-form">
+    <!-- 例として9人分の入力欄 -->
+    <!-- 必要に応じてコピーして人数を増やせます -->
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
+    
+    <button type="submit">表示</button>
+  </form>
+
+  <div id="players" class="player-cards"></div>
 
   <script>
-    const players = [];
-    const bc = new BroadcastChannel("score_channel");
+    document.getElementById("input-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const players = [];
+      const boxes = this.querySelectorAll(".input-box");
 
-    bc.onmessage = (event) => {
-      const received = event.data;
-      players.length = 0;
-      received.forEach(p => {
-        players.push({ ...p, correct: 0, wrong: 0, lose: false });
+      boxes.forEach(box => {
+        const name = box.querySelector("input[name='name']").value.trim();
+        const school = box.querySelector("input[name='school']").value.trim();
+        const rank = box.querySelector("input[name='rank']").value.trim();
+        if (name && school && rank) {
+          players.push({ name, school, rank, correct: 0, wrong: 0, lose: false });
+        }
       });
-      renderPlayers();
-    };
 
-    function renderPlayers() {
+      renderPlayers(players);
+    });
+
+    function renderPlayers(players) {
       const container = document.getElementById("players");
       container.innerHTML = "";
       players.forEach((p, i) => {
         const div = document.createElement("div");
-        div.className = `player ${p.color}`;
+        div.className = "player";
         div.innerHTML = `
           <h2>${p.name}</h2>
           <h4>${p.school}</h4>
@@ -91,6 +130,8 @@
         `;
         container.appendChild(div);
       });
+
+      window.players = players;
     }
 
     function addCorrect(i) {
