@@ -10,42 +10,32 @@
       padding: 20px;
       text-align: center;
     }
-    button {
+    button, select {
       margin: 5px;
       padding: 10px 20px;
       font-size: 16px;
       border-radius: 8px;
       border: none;
       cursor: pointer;
+    }
+    button {
       background-color: #a2d2ff;
     }
     button:hover {
       background-color: #90caff;
     }
-    .question-box {
+    select {
+      background-color: #ffffff;
+    }
+    .question-box, .player-registration {
       margin: 20px auto;
       padding: 20px;
       background: #fff;
       border-radius: 10px;
       width: 80%;
-      max-width: 600px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .counter {
-      font-size: 1.2em;
-      margin-top: 10px;
-    }
-    .player-registration {
-      margin: 40px auto;
-      max-width: 900px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
+      max-width: 800px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       text-align: left;
-    }
-    .player-registration h2 {
-      text-align: center;
     }
     .player-group {
       display: flex;
@@ -68,6 +58,16 @@
 </head>
 <body>
   <h1>クイズ操作画面</h1>
+
+  <div>
+    <label for="round-selector">操作するラウンド：</label>
+    <select id="round-selector">
+      <option value="2R">2R</option>
+      <option value="3R_alpha">3R α</option>
+      <option value="3R_beta">3R β</option>
+    </select>
+  </div>
+
   <div class="question-box">
     <div id="question-text">（問題はまだ表示されていません）</div>
     <div class="counter">現在の問題番号: <span id="current-number">0</span></div>
@@ -91,13 +91,11 @@
     </form>
   </div>
 
-  <div id="score-controller-area"></div>
-
   <script>
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
-    let questions = [];
-    let scores = [];
     const bc = new BroadcastChannel("score_channel");
+
+    let questions = [];
 
     async function fetchCSV() {
       const res = await fetch(CSV_URL);
@@ -110,17 +108,15 @@
       if (!localStorage.getItem("currentQuestionNumber")) {
         localStorage.setItem("currentQuestionNumber", "0");
       }
-      updateQuestionDisplay();
       generatePlayerInputs();
       generatePlayerSelection();
+      updateQuestionDisplay();
     }
 
     function changeQuestion(delta) {
       let current = parseInt(localStorage.getItem("currentQuestionNumber") || "0");
       const maxIndex = questions.length - 1;
-      current += delta;
-      if (current < 0) current = 0;
-      if (current > maxIndex) current = maxIndex;
+      current = Math.min(Math.max(0, current + delta), maxIndex);
       localStorage.setItem("currentQuestionNumber", current);
       updateQuestionDisplay();
     }
@@ -181,68 +177,11 @@
         alert("1人以上選んでください");
         return;
       }
+      const round = document.getElementById("round-selector").value;
       const roundPlayers = selected.map(i => all[i]);
-      localStorage.setItem("currentPlayers", JSON.stringify(roundPlayers));
-      alert("ラウンド出場者を保存しました");
-      scores = roundPlayers.map(() => ({ correct: 0, wrong: 0 }));
-      renderPlayerControllers(roundPlayers);
+      localStorage.setItem(`roundPlayers_${round}`, JSON.stringify(roundPlayers));
+      alert(`ラウンド ${round} の出場者を保存しました`);
     });
-
-    function renderPlayerControllers(players) {
-      const container = document.getElementById("score-controller-area");
-      container.innerHTML = "";
-      const group = document.createElement("div");
-      group.className = "player-controller-group";
-      group.style.display = "flex";
-      group.style.flexWrap = "wrap";
-      group.style.gap = "10px";
-      group.style.marginTop = "30px";
-      players.forEach((p, i) => {
-        const div = document.createElement("div");
-        div.style.border = "1px solid #ccc";
-        div.style.borderRadius = "10px";
-        div.style.padding = "10px";
-        div.style.background = "#fff";
-        div.style.width = "200px";
-        div.innerHTML = `
-          <h3>${p.name}</h3>
-          <p>${p.school}（${p.rank}位）</p>
-          <div id="score-${i}">0○ 0×</div>
-          <div id="lose-${i}" style="color:red;font-weight:bold;"></div>
-          <button onclick="addCorrect(${i})">○ 正解</button>
-          <button onclick="addWrong(${i})">× 誤答</button>
-        `;
-        group.appendChild(div);
-      });
-      container.appendChild(group);
-    }
-
-    function addCorrect(i) {
-      scores[i].correct++;
-      updateScoreDisplay(i);
-    }
-
-    function addWrong(i) {
-      scores[i].wrong++;
-      updateScoreDisplay(i);
-    }
-
-    function updateScoreDisplay(i) {
-      const score = scores[i];
-      const lose = score.wrong >= 2;
-      document.getElementById(`score-${i}`).textContent = `${score.correct}○ ${score.wrong}×`;
-      document.getElementById(`lose-${i}`).textContent = lose ? "LOSE" : "";
-      const player = JSON.parse(localStorage.getItem("currentPlayers"))[i];
-      bc.postMessage({
-        index: i,
-        name: player.name,
-        school: player.school,
-        rank: player.rank,
-        correct: score.correct,
-        wrong: score.wrong,
-        lose: lose,
-      });
-    }
 
     window.onload = init;
   </script>
