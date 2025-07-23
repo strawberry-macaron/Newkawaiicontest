@@ -2,7 +2,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2R 表示画面</title>
+  <title>2R 表示画面（手動入力）</title>
+  <link rel="stylesheet" href="round.css">
   <style>
     body {
       font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
@@ -13,29 +14,19 @@
     h1 {
       color: #c77dff;
     }
-    .input-form {
-      margin: 20px auto;
-      width: 90%;
-      max-width: 1000px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-    }
-    .input-box {
-      background: #ffffff;
+    .form-box {
+      background: #ffffffaa;
       padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      width: 200px;
+      border-radius: 10px;
+      margin: 10px auto;
+      max-width: 600px;
     }
-    .input-box input {
-      width: 100%;
-      margin: 5px 0;
-      padding: 6px;
-      font-size: 14px;
+    .form-box input {
+      width: 30%;
+      padding: 5px;
+      margin: 5px;
     }
-    .player-cards {
+    #players {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -52,20 +43,14 @@
       text-orientation: mixed;
       box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
     }
+    .player h2 {
+      font-size: 1.2em;
+    }
     .score {
       font-weight: bold;
       font-size: 1.3em;
       margin: 10px 0;
     }
-    .buttons button {
-      margin: 3px;
-      padding: 5px 10px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-    }
-    .correct { background-color: #caffbf; }
-    .wrong { background-color: #ffc9de; }
     .lose {
       color: red;
       font-weight: bold;
@@ -73,90 +58,62 @@
   </style>
 </head>
 <body>
-  <h1>2R：プレイヤー入力と表示</h1>
+  <h1>2R 表示画面（手動入力）</h1>
+  <div class="form-box">
+    <form id="player-form">
+      <input type="text" id="name" placeholder="名前" required>
+      <input type="text" id="school" placeholder="学校" required>
+      <input type="number" id="rank" placeholder="順位" min="1" required>
+      <button type="submit">表示</button>
+    </form>
+  </div>
 
-  <form id="input-form" class="input-form">
-    <!-- 例として9人分の入力欄 -->
-    <!-- 必要に応じてコピーして人数を増やせます -->
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    <div class="input-box"><input name="name" placeholder="名前"><input name="school" placeholder="学校"><input name="rank" type="number" placeholder="順位"></div>
-    
-    <button type="submit">表示</button>
-  </form>
-
-  <div id="players" class="player-cards"></div>
+  <div id="players"></div>
 
   <script>
-    document.getElementById("input-form").addEventListener("submit", function(e) {
+    const players = [];
+
+    document.getElementById("player-form").addEventListener("submit", function(e) {
       e.preventDefault();
-      const players = [];
-      const boxes = this.querySelectorAll(".input-box");
+      const name = document.getElementById("name").value;
+      const school = document.getElementById("school").value;
+      const rank = document.getElementById("rank").value;
 
-      boxes.forEach(box => {
-        const name = box.querySelector("input[name='name']").value.trim();
-        const school = box.querySelector("input[name='school']").value.trim();
-        const rank = box.querySelector("input[name='rank']").value.trim();
-        if (name && school && rank) {
-          players.push({ name, school, rank, correct: 0, wrong: 0, lose: false });
-        }
-      });
+      const player = {
+        name,
+        school,
+        rank,
+        color: getColor(players.length),
+        correct: 0,
+        wrong: 0,
+        lose: false
+      };
 
-      renderPlayers(players);
+      players.push(player);
+      renderPlayers();
+      this.reset();
     });
 
-    function renderPlayers(players) {
+    function getColor(index) {
+      const colors = ["pink", "blue", "green", "orange", "purple", "red", "lavender", "peach", "gray"];
+      return colors[index % colors.length];
+    }
+
+    function renderPlayers() {
       const container = document.getElementById("players");
       container.innerHTML = "";
       players.forEach((p, i) => {
         const div = document.createElement("div");
-        div.className = "player";
+        div.className = `player ${p.color}`;
         div.innerHTML = `
           <h2>${p.name}</h2>
           <h4>${p.school}</h4>
           <div>${p.rank}位</div>
-          <div class="score" id="score-${i}">${p.correct}○ ${p.wrong}×</div>
-          <div class="lose" id="lose-${i}">${p.lose ? "LOSE" : ""}</div>
-          <div class="buttons">
-            <button class="correct" onclick="addCorrect(${i})">○</button>
-            <button class="wrong" onclick="addWrong(${i})">×</button>
-          </div>
+          <div class="score">${p.correct}○ ${p.wrong}×</div>
+          <div class="lose">${p.lose ? "LOSE" : ""}</div>
         `;
         container.appendChild(div);
       });
-
-      window.players = players;
-    }
-
-    function addCorrect(i) {
-      if (players[i].lose) return;
-      players[i].correct++;
-      if (players[i].correct >= 5) {
-        players[i].lose = true;
-        alert(players[i].name + " さんが勝ち抜け！");
-      }
-      update(i);
-    }
-
-    function addWrong(i) {
-      if (players[i].lose) return;
-      players[i].wrong++;
-      if (players[i].wrong >= 2) {
-        players[i].lose = true;
-        alert(players[i].name + " さんは失格です。");
-      }
-      update(i);
-    }
-
-    function update(i) {
-      document.getElementById(`score-${i}`).textContent = `${players[i].correct}○ ${players[i].wrong}×`;
-      document.getElementById(`lose-${i}`).textContent = players[i].lose ? "LOSE" : "";
     }
   </script>
 </body>
