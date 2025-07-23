@@ -2,119 +2,154 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2R 表示画面（手動入力）</title>
-  <link rel="stylesheet" href="round.css">
+  <title>2R 表示画面</title>
   <style>
     body {
-      font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
       background-color: #fff0f5;
+      font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
       text-align: center;
-      padding: 20px;
     }
     h1 {
       color: #c77dff;
-    }
-    .form-box {
-      background: #ffffffaa;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 10px auto;
-      max-width: 600px;
-    }
-    .form-box input {
-      width: 30%;
-      padding: 5px;
-      margin: 5px;
+      margin-top: 20px;
     }
     #players {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      margin-top: 30px;
+      margin: 20px;
     }
     .player {
-      width: 180px;
-      border-radius: 15px;
-      background-color: #e3f2fd;
-      border: 3px solid #bde0fe;
-      padding: 15px;
       writing-mode: vertical-rl;
       text-orientation: mixed;
-      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      padding: 10px;
+      width: 120px;
+      border-radius: 15px;
+      border: 3px solid #ddd;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+      background-color: #e0f7fa;
     }
-    .player h2 {
-      font-size: 1.2em;
+    .first { background-color: #ff69b4; color: white; }
+    .second { background-color: #ffc0cb; }
+    .third { background-color: #e6e6fa; }
+    .red { background-color: #ffcccc; }
+    .blue { background-color: #add8e6; }
+    .green { background-color: #ccffcc; }
+    .yellow { background-color: #ffffcc; }
+    .score { font-size: 1.2em; font-weight: bold; margin: 10px 0; }
+    .lose { color: red; font-weight: bold; }
+    .buttons button {
+      margin: 3px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
     }
-    .score {
-      font-weight: bold;
-      font-size: 1.3em;
-      margin: 10px 0;
-    }
-    .lose {
-      color: red;
-      font-weight: bold;
+    .correct { background-color: #b9fbc0; }
+    .wrong { background-color: #ffccd5; }
+    .reset { background-color: #dee2ff; }
+    input[type="text"], input[type="number"], select {
+      width: 90%;
+      margin: 5px 0;
+      padding: 3px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.9em;
     }
   </style>
 </head>
 <body>
-  <h1>2R 表示画面（手動入力）</h1>
-  <div class="form-box">
-    <form id="player-form">
-      <input type="text" id="name" placeholder="名前" required>
-      <input type="text" id="school" placeholder="学校" required>
-      <input type="number" id="rank" placeholder="順位" min="1" required>
-      <button type="submit">表示</button>
-    </form>
-  </div>
-
+  <h1>2nd Round 表示画面</h1>
   <div id="players"></div>
 
   <script>
-    const players = [];
-
-    document.getElementById("player-form").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const school = document.getElementById("school").value;
-      const rank = document.getElementById("rank").value;
-
-      const player = {
-        name,
-        school,
-        rank,
-        color: getColor(players.length),
-        correct: 0,
-        wrong: 0,
-        lose: false
-      };
-
-      players.push(player);
-      renderPlayers();
-      this.reset();
-    });
-
-    function getColor(index) {
-      const colors = ["pink", "blue", "green", "orange", "purple", "red", "lavender", "peach", "gray"];
-      return colors[index % colors.length];
-    }
+    const NUM_PLAYERS = 5;
+    const players = Array.from({ length: NUM_PLAYERS }, (_, i) => ({
+      name: `プレイヤー${i+1}`,
+      school: '',
+      rank: 0,
+      correct: 0,
+      wrong: 0,
+      lose: false,
+      color: 'blue',
+    }));
 
     function renderPlayers() {
       const container = document.getElementById("players");
       container.innerHTML = "";
       players.forEach((p, i) => {
         const div = document.createElement("div");
-        div.className = `player ${p.color}`;
+        div.className = `player ${getColorClass(p, i)}`;
         div.innerHTML = `
-          <h2>${p.name}</h2>
-          <h4>${p.school}</h4>
-          <div>${p.rank}位</div>
-          <div class="score">${p.correct}○ ${p.wrong}×</div>
-          <div class="lose">${p.lose ? "LOSE" : ""}</div>
+          <h4><input type="text" value="${p.name}" onchange="updateField(${i}, 'name', this.value)"></h4>
+          <p><input type="text" placeholder="学校" value="${p.school}" onchange="updateField(${i}, 'school', this.value)"></p>
+          <p><input type="number" placeholder="順位" min="1" value="${p.rank}" onchange="updateField(${i}, 'rank', this.value)"></p>
+          <div class="score" id="score-${i}">${p.correct}○ ${p.wrong}×</div>
+          <div class="lose" id="lose-${i}">${p.lose ? "LOSE" : ""}</div>
+          <div class="buttons">
+            <button class="correct" onclick="addCorrect(${i})">○</button>
+            <button class="wrong" onclick="addWrong(${i})">×</button>
+            <button class="reset" onclick="resetScore(${i})">リセット</button>
+            <br>
+            <select onchange="updateField(${i}, 'color', this.value)">
+              <option value="red" ${p.color==='red' ? 'selected' : ''}>赤</option>
+              <option value="blue" ${p.color==='blue' ? 'selected' : ''}>青</option>
+              <option value="yellow" ${p.color==='yellow' ? 'selected' : ''}>黄</option>
+              <option value="green" ${p.color==='green' ? 'selected' : ''}>緑</option>
+            </select>
+          </div>
         `;
         container.appendChild(div);
       });
     }
+
+    function getColorClass(p, index) {
+      if (p.rank == 1) return 'first';
+      if (p.rank == 2) return 'second';
+      if (p.rank == 3) return 'third';
+      return p.color;
+    }
+
+    function updateField(i, key, value) {
+      if (key === 'rank') players[i][key] = parseInt(value);
+      else players[i][key] = value;
+      renderPlayers();
+    }
+
+    function addCorrect(i) {
+      if (players[i].lose) return;
+      players[i].correct++;
+      if (players[i].correct >= 5) {
+        players[i].lose = true;
+        alert(players[i].name + " さんが勝ち抜け！");
+      }
+      update(i);
+    }
+
+    function addWrong(i) {
+      if (players[i].lose) return;
+      players[i].wrong++;
+      if (players[i].wrong >= 2) {
+        players[i].lose = true;
+        alert(players[i].name + " さんは失格です。");
+      }
+      update(i);
+    }
+
+    function resetScore(i) {
+      players[i].correct = 0;
+      players[i].wrong = 0;
+      players[i].lose = false;
+      update(i);
+    }
+
+    function update(i) {
+      document.getElementById(`score-${i}`).textContent = `${players[i].correct}○ ${players[i].wrong}×`;
+      document.getElementById(`lose-${i}`).textContent = players[i].lose ? "LOSE" : "";
+    }
+
+    renderPlayers();
   </script>
 </body>
 </html>
