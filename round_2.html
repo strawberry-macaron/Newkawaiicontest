@@ -61,21 +61,17 @@
       align-items: center;
       justify-content: space-between;
       padding: 10px 5px;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
       position: relative;
     }
 
     .card input {
-      transform: rotate(-90deg);
-      writing-mode: horizontal-tb;
-      width: 120px;
+      width: 90%;
       font-size: 14px;
       border: none;
       border-bottom: 1px solid #ccc;
       background: transparent;
       text-align: center;
-      margin: 6px 0;
+      margin: 4px 0;
     }
 
     .controls, .color-buttons, .confirm-button {
@@ -83,7 +79,6 @@
     }
 
     .score {
-      writing-mode: horizontal-tb;
       font-size: 14px;
       margin-top: 10px;
     }
@@ -120,13 +115,14 @@
 
     .card .display-info {
       display: none;
-      writing-mode: vertical-rl;
-      font-size: 16px;
-      white-space: nowrap;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .card.show .display-info {
       display: block;
+      text-align: center;
+      white-space: normal;
     }
   </style>
 </head>
@@ -199,9 +195,9 @@
 
       const info = card.querySelector(".display-info");
       info.innerHTML = `
-        <div>${rank}位</div>
+        <div><strong>${name}</strong></div>
         <div>${school}</div>
-        <div>${name}</div>
+        <div>${rank}位</div>
       `;
 
       card.classList.add("show");
