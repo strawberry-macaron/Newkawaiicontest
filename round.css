@@ -92,3 +92,34 @@ h1 {
   font-weight: bold;
   font-size: 1em;
 }
+
+/* 表示切替用のスタイル */
+.card.show input,
+.card.show .confirm-button {
+  display: none;
+}
+
+.card .display-info {
+  display: none;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 16px;
+  white-space: nowrap;
+  line-height: 1.8;
+}
+
+.card.show .display-info {
+  display: block;
+}
+
+/* 決定ボタンの見た目 */
+.confirm-button {
+  writing-mode: horizontal-tb;
+  margin: 5px 0;
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
