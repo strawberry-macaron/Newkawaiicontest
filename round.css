@@ -28,19 +28,20 @@ h1 {
   padding: 10px 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-start;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
   writing-mode: vertical-rl;
   text-orientation: mixed;
   position: relative;
+  overflow: hidden;
 }
 
 .card input {
   transform: rotate(-90deg);
   writing-mode: horizontal-tb;
   width: 120px;
-  margin: 4px 0;
+  margin: 6px 0;
   font-size: 14px;
   border: none;
   border-bottom: 1px solid #ccc;
@@ -48,17 +49,38 @@ h1 {
   text-align: center;
 }
 
+/* 表示切り替え用 */
+.card .display-info {
+  display: none;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 16px;
+  white-space: nowrap;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+.card.show input,
+.card.show .confirm-button {
+  display: none;
+}
+
+.card.show .display-info {
+  display: block;
+}
+
 .controls {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-top: auto;
   writing-mode: horizontal-tb;
-  margin: 10px 0;
 }
 
 .score {
   writing-mode: horizontal-tb;
   font-size: 14px;
+  margin-top: 5px;
 }
 
 .color-buttons {
@@ -66,7 +88,7 @@ h1 {
   flex-direction: column;
   justify-content: center;
   gap: 4px;
-  margin: 10px 0;
+  margin: 8px 0;
 }
 
 .color-button {
@@ -77,7 +99,6 @@ h1 {
   border: 1px solid #999;
 }
 
-/* プレイヤーカード色テーマ */
 .red { background-color: #ffc9c9; border-color: #ff7f7f; }
 .blue { background-color: #cce0ff; border-color: #6699ff; }
 .yellow { background-color: #fff9c4; border-color: #fdd835; }
@@ -93,31 +114,11 @@ h1 {
   font-size: 1em;
 }
 
-/* 表示切替用のスタイル */
-.card.show input,
-.card.show .confirm-button {
-  display: none;
-}
-
-.card .display-info {
-  display: none;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-size: 16px;
-  white-space: nowrap;
-  line-height: 1.8;
-}
-
-.card.show .display-info {
-  display: block;
-}
-
-/* 決定ボタンの見た目 */
 .confirm-button {
   writing-mode: horizontal-tb;
-  margin: 5px 0;
+  margin-top: 6px;
   font-size: 12px;
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 5px;
   background-color: #f0f0f0;
   border: 1px solid #ccc;
