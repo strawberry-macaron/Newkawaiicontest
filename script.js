@@ -72,14 +72,22 @@ function updateDisplay(i) {
   const score = scores[i];
   const scoreDiv = document.getElementById(`score-${i}`);
   const loseDiv = document.getElementById(`lose-${i}`);
-  const isLose = score.wrong >= 2;
+  const round = parseInt(localStorage.getItem("currentRoundNumber") || "1");
 
-  if (isLose) {
-    loseDiv.textContent = "LOSE";
+  let resultText = "";
+  if (round === 2) {
+    if (score.correct >= 5) {
+      resultText = "WIN";
+    } else if (score.wrong >= 2) {
+      resultText = "LOSE";
+    }
   } else {
-    loseDiv.textContent = "";
+    if (score.wrong >= 2) {
+      resultText = "LOSE";
+    }
   }
 
+  loseDiv.textContent = resultText;
   scoreDiv.textContent = `${score.correct}○ ${score.wrong}×`;
 
   bc.postMessage({
@@ -90,7 +98,7 @@ function updateDisplay(i) {
     color: players[i].color,
     correct: score.correct,
     wrong: score.wrong,
-    lose: isLose
+    lose: resultText === "LOSE"
   });
 }
 
