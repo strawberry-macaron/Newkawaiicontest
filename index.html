@@ -45,7 +45,7 @@
           name: data.name,
           school: data.school,
           rank: data.rank,
-          color: data.color,
+          color: data.color || "white",
           correct: data.correct,
           wrong: data.wrong,
           lose: data.lose
@@ -54,13 +54,13 @@
         const container = document.getElementById("players");
         const div = document.createElement("div");
         div.id = `player-${i}`;
-        div.className = `player ${data.color}`;
+        div.className = `player ${data.color || "white"}`;
         div.innerHTML = `
-          <h2>${data.name}</h2>
-          <h4>${data.school}</h4>
-          <div>${data.rank}位</div>
-          <div class="score" id="score-${i}">0○ 0×</div>
-          <div id="lose-${i}" style="color:red; font-weight:bold;"></div>
+          <div class="rank">${data.rank}位</div>
+          <div class="school">${data.school}</div>
+          <div class="name">${data.name}</div>
+          <div class="score" id="score-${i}">${data.correct}○ ${data.wrong}×</div>
+          <div class="lose" id="lose-${i}">${data.lose ? "LOSE" : ""}</div>
         `;
         container.appendChild(div);
       }
