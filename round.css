@@ -1,0 +1,88 @@
+/* round.css - ラウンド画面の共通スタイル */
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+  background-color: #fff0f5; /* パステルピンク */
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #c77dff; /* ラベンダー系 */
+  font-size: 1.8em;
+  margin-bottom: 20px;
+}
+
+#question-display {
+  font-size: 1.2em;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+#players {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.player {
+  width: 180px;
+  border-radius: 15px;
+  background-color: #e3f2fd; /* パステルブルー */
+  border: 3px solid #bde0fe;
+  padding: 15px;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.player:hover {
+  transform: scale(1.03);
+}
+
+.player h2 {
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.player h4 {
+  font-size: 0.9em;
+  margin-top: 0;
+  color: #666;
+}
+
+.score {
+  font-weight: bold;
+  font-size: 1.3em;
+  margin: 10px 0;
+}
+
+.buttons button {
+  margin: 3px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s;
+}
+
+/* 正解ボタン */
+.correct {
+  background-color: #caffbf;
+}
+
+/* 誤答ボタン */
+.wrong {
+  background-color: #ffc9de;
+}
+
+/* LOSE表示 */
+.lose {
+  color: #e63946;
+  font-weight: bold;
+  font-size: 1em;
+}
