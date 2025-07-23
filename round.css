@@ -11,7 +11,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-#players {
+#player-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -19,59 +19,62 @@ h1 {
   margin-top: 30px;
 }
 
-.player {
-  width: 150px;
-  height: 400px;
+.card {
+  width: 100px;
+  height: 420px;
   border-radius: 15px;
   background-color: #e3f2fd;
   border: 3px solid #bde0fe;
-  padding: 10px;
+  padding: 10px 5px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-}
-
-.player:hover {
-  transform: scale(1.03);
-}
-
-.player h2, .player h4 {
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  margin: 5px 0;
+  position: relative;
 }
 
-.buttons {
+.card input {
+  transform: rotate(-90deg);
+  writing-mode: horizontal-tb;
+  width: 120px;
+  margin: 4px 0;
+  font-size: 14px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  text-align: center;
+}
+
+.controls {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  writing-mode: horizontal-tb;
+  margin: 10px 0;
 }
 
-.buttons button {
-  padding: 5px 10px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9em;
+.score {
+  writing-mode: horizontal-tb;
+  font-size: 14px;
 }
 
-/* カラー変更ボタン */
 .color-buttons {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  gap: 5px;
-  margin-top: 10px;
+  gap: 4px;
+  margin: 10px 0;
 }
 
-.color-buttons button {
-  padding: 5px 10px;
-  font-size: 0.8em;
-  border-radius: 6px;
-  border: 1px solid #999;
+.color-button {
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-size: 12px;
   cursor: pointer;
+  border: 1px solid #999;
 }
 
 /* プレイヤーカード色テーマ */
@@ -80,11 +83,9 @@ h1 {
 .yellow { background-color: #fff9c4; border-color: #fdd835; }
 .green { background-color: #c8facc; border-color: #6edc87; }
 
-/* スコア */
-.score {
-  font-size: 1em;
-  margin-top: 5px;
-}
+.rank-1 { background-color: #ffb6c1 !important; }
+.rank-2 { background-color: #ffe4e1 !important; }
+.rank-3 { background-color: #fafad2 !important; }
 
 .lose {
   color: #e63946;
