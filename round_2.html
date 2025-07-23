@@ -228,12 +228,50 @@
 
       card.classList.add("show");
     }
+    let currentRank = 1;
 
-    function addScore(btn, type) {
-      const card = btn.closest(".card");
-      const span = card.querySelector("." + type);
-      span.textContent = parseInt(span.textContent) + 1;
-    }
+function ordinal(n) {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function lockCard(card) {
+  card.querySelectorAll("button").forEach(btn => btn.disabled = true);
+}
+
+function addScore(btn, type) {
+  const card = btn.closest(".card");
+  if (card.classList.contains("finished") || card.classList.contains("failed")) return;
+
+  const maruSpan = card.querySelector(".maru");
+  const batsuSpan = card.querySelector(".batsu");
+  let maru = parseInt(maruSpan.textContent);
+  let batsu = parseInt(batsuSpan.textContent);
+
+  if (type === 'maru') maru++;
+  if (type === 'batsu') batsu++;
+
+  maruSpan.textContent = maru;
+  batsuSpan.textContent = batsu;
+
+  const info = card.querySelector(".display-info");
+
+  if (maru >= 5) {
+    card.classList.add("finished");
+    info.innerHTML += `<div><strong>${ordinal(currentRank)}</strong></div>`;
+    currentRank++;
+    lockCard(card);
+    return;
+  }
+
+  if (batsu >= 2) {
+    card.classList.add("failed");
+    info.innerHTML += `<div style="color: red; font-weight: bold;">失格</div>`;
+    lockCard(card);
+    return;
+  }
+}
 
     function resetScore(btn) {
       const card = btn.closest(".card");
