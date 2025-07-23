@@ -1,13 +1,41 @@
-const playerCount = 4;
+let playerCount = 4;
 let players = [];
 let scores = [];
 
 const bc = new BroadcastChannel("score_channel");
 
 window.onload = () => {
-  const inputContainer = document.getElementById("player-inputs");
+  document.getElementById("player-count-selector").addEventListener("change", (e) => {
+    playerCount = parseInt(e.target.value);
+    generatePlayerInputs(playerCount);
+  });
 
-  for (let i = 0; i < playerCount; i++) {
+  generatePlayerInputs(playerCount); // 初期値で生成
+
+  document.getElementById("player-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    players = [];
+    scores = [];
+    for (let i = 0; i < playerCount; i++) {
+      const name = this[`name${i}`].value;
+      const school = this[`school${i}`].value;
+      const rank = parseInt(this[`rank${i}`].value);
+      const color = getColorByRank(rank);
+      players.push({ name, school, rank, color });
+      scores.push({ correct: 0, wrong: 0 });
+    }
+    this.style.display = "none";
+    document.getElementById("players").style.display = "flex";
+    renderPlayers();
+    updateQuestionDisplay();
+    setInterval(updateQuestionDisplay, 1000);
+  });
+};
+
+function generatePlayerInputs(count) {
+  const inputContainer = document.getElementById("player-inputs");
+  inputContainer.innerHTML = '';
+  for (let i = 0; i < count; i++) {
     inputContainer.innerHTML += `
       <div>
         <h3>プレイヤー${i + 1}</h3>
@@ -17,25 +45,7 @@ window.onload = () => {
       </div><hr>
     `;
   }
-
-  document.getElementById("player-form").addEventListener("submit", function (e) {
-    e.preventDefault();
-    players = [];
-    for (let i = 0; i < playerCount; i++) {
-      const name = this[`name${i}`].value;
-      const school = this[`school${i}`].value;
-      const rank = parseInt(this[`rank${i}`].value);
-      const color = getColorByRank(rank);
-      players.push({ name, school, rank, color });
-    }
-    scores = players.map(() => ({ correct: 0, wrong: 0 }));
-    this.parentElement.style.display = "none";
-    document.getElementById("players").style.display = "flex";
-    renderPlayers();
-    updateQuestionDisplay();
-    setInterval(updateQuestionDisplay, 1000);
-  });
-};
+}
 
 function getColorByRank(rank) {
   if (rank === 1) return "strawberry";
@@ -136,8 +146,8 @@ async function updateQuestionDisplay() {
 
   if (index >= 1 && index < rows.length) {
     const row = rows[index];
-    const questionText = (row[2] || "").trim() || "（問題なし）"; // C列
-    const answerText = (row[3] || "").trim() || "（答えなし）";   // D列
+    const questionText = (row[2] || "").trim() || "（問題なし）";
+    const answerText = (row[3] || "").trim() || "（答えなし）";
     display.innerHTML = `
       <strong>Q:</strong> ${questionText}<br>
       <strong>A:</strong> ${answerText}
