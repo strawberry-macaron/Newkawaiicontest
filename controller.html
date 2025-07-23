@@ -10,7 +10,6 @@
       padding: 20px;
       text-align: center;
     }
-
     button {
       margin: 5px;
       padding: 10px 20px;
@@ -20,11 +19,9 @@
       cursor: pointer;
       background-color: #a2d2ff;
     }
-
     button:hover {
       background-color: #90caff;
     }
-
     .question-box {
       margin: 20px auto;
       padding: 20px;
@@ -34,12 +31,10 @@
       max-width: 600px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-
     .counter {
       font-size: 1.2em;
       margin-top: 10px;
     }
-
     .player-registration {
       margin: 40px auto;
       max-width: 900px;
@@ -49,17 +44,14 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       text-align: left;
     }
-
     .player-registration h2 {
       text-align: center;
     }
-
     .player-group {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
     }
-
     .player-box {
       flex: 1 1 200px;
       border: 1px solid #ccc;
@@ -67,7 +59,6 @@
       padding: 10px;
       background-color: #fefefe;
     }
-
     input[type="text"], input[type="number"] {
       width: 100%;
       padding: 5px;
@@ -77,8 +68,6 @@
 </head>
 <body>
   <h1>クイズ操作画面</h1>
-
-  <!-- 問題操作 -->
   <div class="question-box">
     <div id="question-text">（問題はまだ表示されていません）</div>
     <div class="counter">現在の問題番号: <span id="current-number">0</span></div>
@@ -86,25 +75,22 @@
   <button onclick="changeQuestion(-1)">前へ</button>
   <button onclick="changeQuestion(1)">次へ</button>
 
-  <!-- プレイヤー登録 -->
   <div class="player-registration">
-    <h2>36人のプレイヤー登録</h2>
+    <h2>プレイヤー登録</h2>
     <form id="player-form">
       <div class="player-group" id="player-inputs"></div>
       <button type="submit">保存して選択へ</button>
     </form>
   </div>
 
-  <!-- 出場者選択 -->
   <div class="player-registration">
-    <h2>ラウンド出場者（9人）選択</h2>
+    <h2>ラウンド出場者選択</h2>
     <form id="round-form">
       <div class="player-group" id="player-select"></div>
       <button type="submit">ラウンド出場者を保存</button>
     </form>
   </div>
 
-  <!-- 得点操作表示場所 -->
   <div id="score-controller-area"></div>
 
   <script>
@@ -152,9 +138,9 @@
         container.innerHTML += `
           <div class="player-box">
             <h4>プレイヤー${i + 1}</h4>
-            <input type="text" name="name${i}" placeholder="名前" required>
-            <input type="text" name="school${i}" placeholder="学校" required>
-            <input type="number" name="rank${i}" min="1" max="100" placeholder="順位" required>
+            <input type="text" name="name${i}" placeholder="名前">
+            <input type="text" name="school${i}" placeholder="学校">
+            <input type="number" name="rank${i}" min="1" max="100" placeholder="順位">
           </div>
         `;
       }
@@ -167,7 +153,9 @@
         const name = this[`name${i}`].value;
         const school = this[`school${i}`].value;
         const rank = parseInt(this[`rank${i}`].value);
-        data.push({ name, school, rank });
+        if (name && school && rank) {
+          data.push({ name, school, rank });
+        }
       }
       localStorage.setItem("allPlayers", JSON.stringify(data));
       alert("プレイヤー情報を保存しました");
@@ -189,15 +177,13 @@
       e.preventDefault();
       const selected = Array.from(this.querySelectorAll("input[type=checkbox]:checked")).map(cb => parseInt(cb.value));
       const all = JSON.parse(localStorage.getItem("allPlayers") || "[]");
-      if (selected.length !== 9) {
-        alert("9人ちょうど選んでください");
+      if (selected.length === 0) {
+        alert("1人以上選んでください");
         return;
       }
       const roundPlayers = selected.map(i => all[i]);
       localStorage.setItem("currentPlayers", JSON.stringify(roundPlayers));
       alert("ラウンド出場者を保存しました");
-
-      // 得点初期化 & 表示
       scores = roundPlayers.map(() => ({ correct: 0, wrong: 0 }));
       renderPlayerControllers(roundPlayers);
     });
@@ -211,7 +197,6 @@
       group.style.flexWrap = "wrap";
       group.style.gap = "10px";
       group.style.marginTop = "30px";
-
       players.forEach((p, i) => {
         const div = document.createElement("div");
         div.style.border = "1px solid #ccc";
@@ -219,7 +204,6 @@
         div.style.padding = "10px";
         div.style.background = "#fff";
         div.style.width = "200px";
-
         div.innerHTML = `
           <h3>${p.name}</h3>
           <p>${p.school}（${p.rank}位）</p>
@@ -230,7 +214,6 @@
         `;
         group.appendChild(div);
       });
-
       container.appendChild(group);
     }
 
@@ -249,9 +232,7 @@
       const lose = score.wrong >= 2;
       document.getElementById(`score-${i}`).textContent = `${score.correct}○ ${score.wrong}×`;
       document.getElementById(`lose-${i}`).textContent = lose ? "LOSE" : "";
-
       const player = JSON.parse(localStorage.getItem("currentPlayers"))[i];
-
       bc.postMessage({
         index: i,
         name: player.name,
