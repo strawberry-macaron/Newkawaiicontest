@@ -1,14 +1,13 @@
-/* round.css - ラウンド画面の共通スタイル */
-
+/* 共通スタイル */
 body {
   font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
-  background-color: #fff0f5; /* パステルピンク */
+  background-color: #fff0f5; /* パステルピンク背景 */
   text-align: center;
   padding: 20px;
 }
 
 h1 {
-  color: #c77dff; /* ラベンダー系 */
+  color: #c77dff;
   font-size: 1.8em;
   margin-bottom: 20px;
 }
@@ -19,6 +18,7 @@ h1 {
   color: #555;
 }
 
+/* プレイヤー全体の並び */
 #players {
   display: flex;
   flex-wrap: wrap;
@@ -27,15 +27,19 @@ h1 {
   margin-top: 30px;
 }
 
+/* プレイヤーカード縦長スタイル */
 .player {
-  width: 180px;
-  border-radius: 15px;
-  background-color: #e3f2fd; /* パステルブルー */
+  width: 160px;
+  min-height: 360px;
+  border-radius: 20px;
+  background-color: #e3f2fd;
   border: 3px solid #bde0fe;
   padding: 15px;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   transition: transform 0.2s;
 }
 
@@ -60,29 +64,75 @@ h1 {
   margin: 10px 0;
 }
 
-.buttons button {
-  margin: 3px;
-  padding: 6px 12px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: background-color 0.2s;
-}
-
-/* 正解ボタン */
-.correct {
-  background-color: #caffbf;
-}
-
-/* 誤答ボタン */
-.wrong {
-  background-color: #ffc9de;
-}
-
-/* LOSE表示 */
 .lose {
   color: #e63946;
   font-weight: bold;
   font-size: 1em;
 }
+
+/* ボタンエリア */
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 5px 0;
+}
+
+.buttons button {
+  padding: 5px 10px;
+  font-size: 0.9em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* ○×ボタン */
+.correct {
+  background-color: #caffbf;
+}
+.wrong {
+  background-color: #ffc9de;
+}
+
+/* 色選択ボタン */
+.color-buttons {
+  display: flex;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.color-buttons button {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+  outline: 2px solid white;
+}
+
+.color-buttons button:hover {
+  transform: scale(1.2);
+}
+
+/* 色テーマクラス */
+.color-red {
+  background-color: #ffccd5 !important;
+}
+.color-blue {
+  background-color: #cce5ff !important;
+}
+.color-yellow {
+  background-color: #fff9c4 !important;
+}
+.color-green {
+  background-color: #ccffcc !important;
+}
+
+/* 色ボタンの見た目 */
+.color-red-button { background-color: #ff8fa3; }
+.color-blue-button { background-color: #82b1ff; }
+.color-yellow-button { background-color: #ffe082; }
+.color-green-button { background-color: #81c784; }
