@@ -6,116 +6,139 @@
   <link rel="stylesheet" href="round.css">
   <style>
     body {
-      background-color: #ffeef5;
-      font-family: sans-serif;
+      background-color: #fdeff2;
+      font-family: "Hiragino Kaku Gothic ProN", sans-serif;
       text-align: center;
-      padding: 20px;
+      margin: 0;
+      padding: 1em;
     }
-    #player-container {
+    h1 {
+      color: #b36edc;
+      font-size: 2em;
+    }
+    #player-count-select {
+      margin-bottom: 1em;
+    }
+    #players {
       display: flex;
-      justify-content: center;
       flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 20px;
+      justify-content: center;
+      gap: 1em;
     }
     .player-card {
-      background-color: #e5f6ff;
-      border-radius: 20px;
-      padding: 16px;
-      width: 120px;
+      background: white;
+      border-radius: 16px;
+      padding: 1em;
+      width: 100px;
       writing-mode: vertical-rl;
-      text-align: center;
-      position: relative;
-      box-shadow: 2px 2px 8px #ccc;
+      border: 4px solid black;
+      font-weight: bold;
+      font-size: 1.2em;
     }
-    .rank-input, .school-input, .name-input {
-      writing-mode: horizontal-tb;
-      width: 100%;
-      margin: 4px 0;
-    }
-    .score-buttons {
-      writing-mode: horizontal-tb;
-      margin-top: 8px;
-    }
-    .color-buttons button {
+    .color-red    { border-color: #ff6666; background: #ffe5e5; }
+    .color-blue   { border-color: #66aaff; background: #e5f0ff; }
+    .color-yellow { border-color: #ffcc66; background: #fff8e5; }
+    .color-green  { border-color: #66dd88; background: #e5fff0; }
+
+    .score { font-size: 1em; margin-top: 0.5em; }
+    .buttons button, select, input {
       margin: 2px;
+      padding: 4px;
+      font-size: 0.9em;
+    }
+    .color-buttons {
+      margin-top: 2em;
     }
   </style>
 </head>
 <body>
-
   <h1>2nd Round 表示画面</h1>
+  <div id="player-count-select">
+    人数を選んでください：
+    <select id="playerCount">
+      <option value="3">3人</option>
+      <option value="4">4人</option>
+      <option value="5" selected>5人</option>
+      <option value="6">6人</option>
+      <option value="7">7人</option>
+      <option value="8">8人</option>
+    </select>
+    <button onclick="generatePlayers()">決定</button>
+  </div>
 
-  <label for="numPlayers">人数を選んでください：</label>
-  <select id="numPlayers">
-    <option value="1">1人</option>
-    <option value="3">3人</option>
-    <option value="5" selected>5人</option>
-    <option value="10">10人</option>
-    <option value="36">36人</option>
-  </select>
-  <button onclick="generatePlayers()">決定</button>
+  <div id="players"></div>
 
-  <div id="player-container"></div>
+  <div class="color-buttons">
+    <button onclick="changeColor('red')">赤</button>
+    <button onclick="changeColor('blue')">青</button>
+    <button onclick="changeColor('yellow')">黄</button>
+    <button onclick="changeColor('green')">緑</button>
+  </div>
 
   <script>
+    let playerCount = 5;
+    let scores = [];
+
     function generatePlayers() {
-      const container = document.getElementById('player-container');
-      container.innerHTML = '';
-      const num = parseInt(document.getElementById('numPlayers').value);
+      playerCount = parseInt(document.getElementById("playerCount").value);
+      const container = document.getElementById("players");
+      container.innerHTML = "";
+      scores = [];
 
-      for (let i = 0; i < num; i++) {
-        const card = document.createElement('div');
-        card.className = 'player-card';
+      for (let i = 0; i < playerCount; i++) {
+        scores[i] = { correct: 0, wrong: 0 };
+
+        const card = document.createElement("div");
+        card.className = "player-card color-blue";
         card.innerHTML = `
-          <input type="number" class="rank-input" placeholder="順位" min="1">
-          <input type="text" class="school-input" placeholder="学校名">
-          <input type="text" class="name-input" placeholder="プレイヤー名">
-
-          <div class="score-buttons">
-            <button onclick="changeScore(this, 'maru')">〇</button>
-            <button onclick="changeScore(this, 'batsu')">×</button>
-            <button onclick="resetScore(this)">リセット</button>
-            <div class="score-display">0〇 0×</div>
-          </div>
-
-          <div class="color-buttons">
-            <button onclick="setColor(this, 'red')">赤</button>
-            <button onclick="setColor(this, 'blue')">青</button>
-            <button onclick="setColor(this, 'yellow')">黄</button>
-            <button onclick="setColor(this, 'green')">緑</button>
+          <div>
+            <input type="number" placeholder="順位" id="rank-${i}" style="width:60px;"><br>
+            <input type="text" placeholder="学校名" id="school-${i}" style="width:80px;"><br>
+            <input type="text" placeholder="プレイヤー名" id="name-${i}" style="width:80px;"><br>
+            <div class="score" id="score-${i}">0○ 0×</div>
+            <div class="buttons">
+              <button onclick="addCorrect(${i})">○</button>
+              <button onclick="addWrong(${i})">×</button>
+              <button onclick="resetScore(${i})">リセット</button><br>
+              <button onclick="setColor(${i}, 'red')">赤</button>
+              <button onclick="setColor(${i}, 'blue')">青</button>
+              <button onclick="setColor(${i}, 'yellow')">黄</button>
+              <button onclick="setColor(${i}, 'green')">緑</button>
+            </div>
           </div>
         `;
         container.appendChild(card);
       }
     }
 
-    function changeScore(btn, type) {
-      const display = btn.parentElement.querySelector('.score-display');
-      const [maruText, batsuText] = display.textContent.split(' ');
-      let maru = parseInt(maruText) || 0;
-      let batsu = parseInt(batsuText) || 0;
-      if (type === 'maru') maru++;
-      if (type === 'batsu') batsu++;
-      display.textContent = `${maru}〇 ${batsu}×`;
+    function addCorrect(i) {
+      scores[i].correct++;
+      updateScore(i);
+    }
+    function addWrong(i) {
+      scores[i].wrong++;
+      updateScore(i);
+    }
+    function resetScore(i) {
+      scores[i] = { correct: 0, wrong: 0 };
+      updateScore(i);
+    }
+    function updateScore(i) {
+      document.getElementById(`score-${i}`).textContent = `${scores[i].correct}○ ${scores[i].wrong}×`;
     }
 
-    function resetScore(btn) {
-      const display = btn.parentElement.querySelector('.score-display');
-      display.textContent = `0〇 0×`;
+    function setColor(i, color) {
+      const card = document.getElementsByClassName("player-card")[i];
+      card.className = `player-card color-${color}`;
+    }
+    function changeColor(color) {
+      const cards = document.getElementsByClassName("player-card");
+      for (let i = 0; i < cards.length; i++) {
+        setColor(i, color);
+      }
     }
 
-    function setColor(btn, color) {
-      const card = btn.closest('.player-card');
-      const pastel = {
-        red: '#ffc5c5',
-        blue: '#c5dfff',
-        yellow: '#fff7c5',
-        green: '#d0f7c5'
-      };
-      card.style.backgroundColor = pastel[color];
-    }
+    window.onload = generatePlayers;
   </script>
-
 </body>
 </html>
