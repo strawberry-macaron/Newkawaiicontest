@@ -78,10 +78,7 @@
       margin: 6px 0;
     }
 
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+    .controls, .color-buttons, .confirm-button {
       writing-mode: horizontal-tb;
     }
 
@@ -115,12 +112,27 @@
     .blue { background-color: #cce0ff; border-color: #6699ff; }
     .yellow { background-color: #fff9c4; border-color: #fdd835; }
     .green { background-color: #c8facc; border-color: #6edc87; }
+
+    .card.show input,
+    .card.show .confirm-button {
+      display: none;
+    }
+
+    .card .display-info {
+      display: none;
+      writing-mode: vertical-rl;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .card.show .display-info {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <h1>2nd Round 表示画面</h1>
 
-  <!-- ✅ 問題文表示エリア -->
   <div id="question-area">
     <div id="question-number">問題番号</div>
     <div id="question-text">問題文を読み込み中...</div>
@@ -158,8 +170,10 @@
         card.className = "card";
         card.innerHTML = `
           <input placeholder="順位" class="rank-input">
-          <input placeholder="学校名">
-          <input placeholder="プレイヤー名">
+          <input placeholder="学校名" class="school-input">
+          <input placeholder="プレイヤー名" class="name-input">
+          <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
+          <div class="display-info"></div>
           <div class="controls">
             <button onclick="addScore(this, 'maru')">〇</button>
             <button onclick="addScore(this, 'batsu')">×</button>
@@ -175,6 +189,22 @@
         `;
         container.appendChild(card);
       }
+    }
+
+    function confirmPlayer(btn) {
+      const card = btn.closest(".card");
+      const rank = card.querySelector(".rank-input").value;
+      const school = card.querySelector(".school-input").value;
+      const name = card.querySelector(".name-input").value;
+
+      const info = card.querySelector(".display-info");
+      info.innerHTML = `
+        <div>${rank}位</div>
+        <div>${school}</div>
+        <div>${name}</div>
+      `;
+
+      card.classList.add("show");
     }
 
     function addScore(btn, type) {
