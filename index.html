@@ -2,82 +2,75 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ホーム画面</title>
+  <title>クイズ大会 - ラウンド選択</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
       font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
-      background: linear-gradient(to bottom right, #ffe4f0, #e0f7ff);
-      color: #333;
-      text-align: center;
+      background: linear-gradient(to right, #ffe0f0, #e0e7ff, #e0f7ff);
+      margin: 0;
       padding: 40px;
+      text-align: center;
     }
 
     h1 {
-      font-size: 2.5em;
-      margin-bottom: 30px;
+      font-size: 2em;
+      color: #a45ba7;
+      margin-bottom: 40px;
     }
 
     .round-buttons {
       display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: center;
+      gap: 20px;
     }
 
-    .button {
-      background-color: #f9e5f6;
-      color: #444;
-      border: none;
+    .round-button {
+      padding: 15px 30px;
       border-radius: 20px;
-      padding: 20px 40px;
-      font-size: 1.5em;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      font-size: 1.2em;
+      font-weight: bold;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: transform 0.2s, background-color 0.3s;
     }
 
-    .button:hover {
-      background-color: #e6d7ff;
+    .pink { background-color: #ffcde0; }
+    .lavender { background-color: #e6e6fa; }
+    .blue { background-color: #b2e0f7; }
+    .peach { background-color: #ffe5b4; }
+
+    .round-button:hover {
       transform: scale(1.05);
-    }
-
-    .sub-buttons {
-      display: none;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 10px;
+      opacity: 0.9;
     }
   </style>
 </head>
 <body>
   <h1>ラウンド選択</h1>
+
   <div class="round-buttons">
-    <button class="button" onclick="goTo('2R')">2R</button>
-    <div>
-      <button class="button" onclick="toggleSub()">3R</button>
-      <div id="sub-buttons" class="sub-buttons">
-        <button class="button" onclick="goTo('3R_alpha')">3R α</button>
-        <button class="button" onclick="goTo('3R_beta')">3R β</button>
-        <button class="button" onclick="goTo('3R_gamma')">3R γ</button>
-      </div>
-    </div>
-    <button class="button" onclick="goTo('2nd')">EX</button>
-    <button class="button" onclick="goTo('SF')">SF</button>
-    <button class="button" onclick="goTo('F')">F</button>
+    <button class="round-button pink" onclick="location.href='round_2.html'">2R</button>
+    <button class="round-button lavender" onclick="show3RCourses()">3R</button>
+    <button class="round-button blue" onclick="location.href='round_ex.html'">Ex（2nd）</button>
+    <button class="round-button peach" onclick="location.href='round_sf.html'">SF</button>
+    <button class="round-button lavender" onclick="location.href='round_f.html'">F</button>
   </div>
 
   <script>
-    function toggleSub() {
-      const sub = document.getElementById("sub-buttons");
-      sub.style.display = sub.style.display === "flex" ? "none" : "flex";
-    }
-
-    function goTo(round) {
-      // ページ遷移（例: それぞれのラウンドに対応するHTMLに遷移）
-      // 必要に応じてリネーム or 統一ファイルで制御してもOK
-      window.location.href = `${round}.html`;
+    function show3RCourses() {
+      const alpha = confirm("3Rのコースを選んでください\nOK → αコース\nキャンセル → βコース");
+      if (alpha) {
+        location.href = 'round_3_alpha.html';
+      } else {
+        const beta = confirm("OK → βコース\nキャンセル → γコース");
+        if (beta) {
+          location.href = 'round_3_beta.html';
+        } else {
+          location.href = 'round_3_gamma.html';
+        }
+      }
     }
   </script>
 </body>
