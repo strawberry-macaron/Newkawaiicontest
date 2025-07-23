@@ -2,99 +2,83 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クイズ表示画面</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ホーム画面</title>
+  <style>
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+      background: linear-gradient(to bottom right, #ffe4f0, #e0f7ff);
+      color: #333;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 30px;
+    }
+
+    .round-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button {
+      background-color: #f9e5f6;
+      color: #444;
+      border: none;
+      border-radius: 20px;
+      padding: 20px 40px;
+      font-size: 1.5em;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .button:hover {
+      background-color: #e6d7ff;
+      transform: scale(1.05);
+    }
+
+    .sub-buttons {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>クイズ表示画面</h1>
-
-  <!-- 問題文と答え -->
-  <div id="question-display">（問題はまだ表示されていません）</div>
-
-  <!-- ボタン群 -->
-  <button id="next-button">▶️ 次へ</button>
-  <button id="reset-button">🔁 スコアリセット</button>
-
-  <!-- プレイヤーカード -->
-  <div id="players"></div>
+  <h1>ラウンド選択</h1>
+  <div class="round-buttons">
+    <button class="button" onclick="goTo('2R')">2R</button>
+    <div>
+      <button class="button" onclick="toggleSub()">3R</button>
+      <div id="sub-buttons" class="sub-buttons">
+        <button class="button" onclick="goTo('3R_alpha')">3R α</button>
+        <button class="button" onclick="goTo('3R_beta')">3R β</button>
+        <button class="button" onclick="goTo('3R_gamma')">3R γ</button>
+      </div>
+    </div>
+    <button class="button" onclick="goTo('2nd')">EX</button>
+    <button class="button" onclick="goTo('SF')">SF</button>
+    <button class="button" onclick="goTo('F')">F</button>
+  </div>
 
   <script>
-    const bc = new BroadcastChannel("score_channel");
-    const players = [];
+    function toggleSub() {
+      const sub = document.getElementById("sub-buttons");
+      sub.style.display = sub.style.display === "flex" ? "none" : "flex";
+    }
 
-    bc.onmessage = (event) => {
-      const data = event.data;
-
-      // ✅ 問題表示
-      if (data.type === "question") {
-        const display = document.getElementById("question-display");
-        display.innerHTML = `<strong>Q:</strong> ${data.q}<br><strong>A:</strong> ${data.a}`;
-        return;
-      }
-
-      const i = data.index;
-
-      // ✅ すでに存在するプレイヤーの更新
-      if (players[i]) {
-        players[i].correct = data.correct;
-        players[i].wrong = data.wrong;
-        players[i].lose = data.lose;
-      } else {
-        // 初めてのプレイヤー登録
-        players[i] = {
-          name: data.name,
-          school: data.school,
-          rank: data.rank,
-          color: data.color || "white",
-          correct: data.correct,
-          wrong: data.wrong,
-          lose: data.lose
-        };
-
-        const container = document.getElementById("players");
-        const div = document.createElement("div");
-        div.id = `player-${i}`;
-        div.className = `player ${data.color || "white"}`;
-        div.innerHTML = `
-          <div class="rank">${data.rank}位</div>
-          <div class="school">${data.school}</div>
-          <div class="name">${data.name}</div>
-          <div class="score" id="score-${i}">${data.correct}○ ${data.wrong}×</div>
-          <div class="lose" id="lose-${i}">${data.lose ? "LOSE" : ""}</div>
-        `;
-        container.appendChild(div);
-      }
-
-      // ✅ スコア表示を更新
-      document.getElementById(`score-${i}`).textContent =
-        `${data.correct}○ ${data.wrong}×`;
-      document.getElementById(`lose-${i}`).textContent =
-        data.lose ? "LOSE" : "";
-    };
-
-    // ✅ 次へボタン
-    document.getElementById("next-button").addEventListener("click", () => {
-      let current = parseInt(localStorage.getItem("currentQuestionNumber") || "0");
-      current += 1;
-      localStorage.setItem("currentQuestionNumber", current.toString());
-    });
-
-    // ✅ スコアリセットボタン
-    document.getElementById("reset-button").addEventListener("click", () => {
-      for (let i = 0; i < players.length; i++) {
-        if (!players[i]) continue;
-        bc.postMessage({
-          index: i,
-          name: players[i].name,
-          school: players[i].school,
-          rank: players[i].rank,
-          color: players[i].color,
-          correct: 0,
-          wrong: 0,
-          lose: false
-        });
-      }
-    });
+    function goTo(round) {
+      // ページ遷移（例: それぞれのラウンドに対応するHTMLに遷移）
+      // 必要に応じてリネーム or 統一ファイルで制御してもOK
+      window.location.href = `${round}.html`;
+    }
   </script>
 </body>
 </html>
