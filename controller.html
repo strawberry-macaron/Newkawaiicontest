@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>コントロール画面</title>
+  <title>クイズ操作画面</title>
   <style>
     body {
       font-family: sans-serif;
@@ -177,9 +177,19 @@
         alert("1人以上選んでください");
         return;
       }
+
       const round = document.getElementById("round-selector").value;
       const roundPlayers = selected.map(i => all[i]);
+
+      // カラーと初期状態を付加して送信
+      const colors = ["pink", "blue", "green", "orange", "purple", "red", "lavender", "peach", "gray"];
+      roundPlayers.forEach((p, idx) => {
+        p.color = colors[idx % colors.length];
+      });
+
       localStorage.setItem(`roundPlayers_${round}`, JSON.stringify(roundPlayers));
+      bc.postMessage(roundPlayers);
+
       alert(`ラウンド ${round} の出場者を保存しました`);
     });
 
