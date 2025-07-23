@@ -159,3 +159,15 @@ async function updateQuestionDisplay() {
     display.textContent = "問題が見つかりません。";
   }
 }
+let showQuestion = true;
+let showAnswer = true;
+
+function toggleQuestion() {
+  showQuestion = !showQuestion;
+  updateQuestionDisplay();
+}
+
+function toggleAnswer() {
+  showAnswer = !showAnswer;
+  updateQuestionDisplay();
+}
