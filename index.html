@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>クイズ大会 - 超kawaii杯　ラウンド選択</title>
+  <title>クイズ大会 - ラウンド選択</title>
   <link rel="stylesheet" href="style.css">
   <style>
     body {
@@ -19,11 +19,13 @@
       margin-bottom: 40px;
     }
 
-    .round-buttons {
+    .round-buttons,
+    .sub-buttons {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
+      margin-bottom: 20px;
     }
 
     .round-button {
@@ -45,6 +47,16 @@
       transform: scale(1.05);
       opacity: 0.9;
     }
+
+    .sub-buttons {
+      display: none;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -52,25 +64,23 @@
 
   <div class="round-buttons">
     <button class="round-button pink" onclick="location.href='round_2.html'">2R</button>
-    <button class="round-button lavender" onclick="show3RCourses()">3R</button>
+    <button class="round-button lavender" onclick="toggle3R()">3R</button>
     <button class="round-button blue" onclick="location.href='round_ex.html'">Ex（2nd）</button>
     <button class="round-button peach" onclick="location.href='round_sf.html'">SF</button>
     <button class="round-button lavender" onclick="location.href='round_f.html'">F</button>
   </div>
 
+  <!-- 3Rのサブボタン -->
+  <div class="sub-buttons" id="threeR-buttons">
+    <button class="round-button lavender" onclick="location.href='round_3_alpha.html'">3R α</button>
+    <button class="round-button lavender" onclick="location.href='round_3_beta.html'">3R β</button>
+    <button class="round-button lavender" onclick="location.href='round_3_gamma.html'">3R γ</button>
+  </div>
+
   <script>
-    function show3RCourses() {
-      const alpha = confirm("3Rのコースを選んでください\nOK → αコース\nキャンセル → βコース");
-      if (alpha) {
-        location.href = 'round_3_alpha.html';
-      } else {
-        const beta = confirm("OK → βコース\nキャンセル → γコース");
-        if (beta) {
-          location.href = 'round_3_beta.html';
-        } else {
-          location.href = 'round_3_gamma.html';
-        }
-      }
+    function toggle3R() {
+      const sub = document.getElementById("threeR-buttons");
+      sub.style.display = sub.style.display === "flex" ? "none" : "flex";
     }
   </script>
 </body>
