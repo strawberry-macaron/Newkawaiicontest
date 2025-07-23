@@ -31,22 +31,20 @@ h1 {
   align-items: center;
   justify-content: flex-start;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
   position: relative;
   overflow: hidden;
 }
 
 .card input {
-  transform: rotate(-90deg);
-  writing-mode: horizontal-tb;
-  width: 120px;
+  width: 90%;
   margin: 6px 0;
   font-size: 14px;
   border: none;
   border-bottom: 1px solid #ccc;
   background: transparent;
   text-align: center;
+  transform: none !important;
+  writing-mode: horizontal-tb;
 }
 
 /* 表示切り替え用 */
