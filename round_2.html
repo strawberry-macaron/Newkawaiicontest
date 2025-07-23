@@ -2,154 +2,120 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2R 表示画面</title>
+  <title>2nd Round 表示画面</title>
+  <link rel="stylesheet" href="round.css">
   <style>
     body {
-      background-color: #fff0f5;
-      font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+      background-color: #ffeef5;
+      font-family: sans-serif;
       text-align: center;
+      padding: 20px;
     }
-    h1 {
-      color: #c77dff;
+    #player-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
       margin-top: 20px;
     }
-    #players {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      margin: 20px;
-    }
-    .player {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      padding: 10px;
+    .player-card {
+      background-color: #e5f6ff;
+      border-radius: 20px;
+      padding: 16px;
       width: 120px;
-      border-radius: 15px;
-      border: 3px solid #ddd;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
-      background-color: #e0f7fa;
+      writing-mode: vertical-rl;
+      text-align: center;
+      position: relative;
+      box-shadow: 2px 2px 8px #ccc;
     }
-    .first { background-color: #ff69b4; color: white; }
-    .second { background-color: #ffc0cb; }
-    .third { background-color: #e6e6fa; }
-    .red { background-color: #ffcccc; }
-    .blue { background-color: #add8e6; }
-    .green { background-color: #ccffcc; }
-    .yellow { background-color: #ffffcc; }
-    .score { font-size: 1.2em; font-weight: bold; margin: 10px 0; }
-    .lose { color: red; font-weight: bold; }
-    .buttons button {
-      margin: 3px;
-      padding: 3px 8px;
-      border-radius: 8px;
-      border: none;
-      font-size: 1em;
+    .rank-input, .school-input, .name-input {
+      writing-mode: horizontal-tb;
+      width: 100%;
+      margin: 4px 0;
     }
-    .correct { background-color: #b9fbc0; }
-    .wrong { background-color: #ffccd5; }
-    .reset { background-color: #dee2ff; }
-    input[type="text"], input[type="number"], select {
-      width: 90%;
-      margin: 5px 0;
-      padding: 3px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 0.9em;
+    .score-buttons {
+      writing-mode: horizontal-tb;
+      margin-top: 8px;
+    }
+    .color-buttons button {
+      margin: 2px;
     }
   </style>
 </head>
 <body>
+
   <h1>2nd Round 表示画面</h1>
-  <div id="players"></div>
+
+  <label for="numPlayers">人数を選んでください：</label>
+  <select id="numPlayers">
+    <option value="1">1人</option>
+    <option value="3">3人</option>
+    <option value="5" selected>5人</option>
+    <option value="10">10人</option>
+    <option value="36">36人</option>
+  </select>
+  <button onclick="generatePlayers()">決定</button>
+
+  <div id="player-container"></div>
 
   <script>
-    const NUM_PLAYERS = 5;
-    const players = Array.from({ length: NUM_PLAYERS }, (_, i) => ({
-      name: `プレイヤー${i+1}`,
-      school: '',
-      rank: 0,
-      correct: 0,
-      wrong: 0,
-      lose: false,
-      color: 'blue',
-    }));
+    function generatePlayers() {
+      const container = document.getElementById('player-container');
+      container.innerHTML = '';
+      const num = parseInt(document.getElementById('numPlayers').value);
 
-    function renderPlayers() {
-      const container = document.getElementById("players");
-      container.innerHTML = "";
-      players.forEach((p, i) => {
-        const div = document.createElement("div");
-        div.className = `player ${getColorClass(p, i)}`;
-        div.innerHTML = `
-          <h4><input type="text" value="${p.name}" onchange="updateField(${i}, 'name', this.value)"></h4>
-          <p><input type="text" placeholder="学校" value="${p.school}" onchange="updateField(${i}, 'school', this.value)"></p>
-          <p><input type="number" placeholder="順位" min="1" value="${p.rank}" onchange="updateField(${i}, 'rank', this.value)"></p>
-          <div class="score" id="score-${i}">${p.correct}○ ${p.wrong}×</div>
-          <div class="lose" id="lose-${i}">${p.lose ? "LOSE" : ""}</div>
-          <div class="buttons">
-            <button class="correct" onclick="addCorrect(${i})">○</button>
-            <button class="wrong" onclick="addWrong(${i})">×</button>
-            <button class="reset" onclick="resetScore(${i})">リセット</button>
-            <br>
-            <select onchange="updateField(${i}, 'color', this.value)">
-              <option value="red" ${p.color==='red' ? 'selected' : ''}>赤</option>
-              <option value="blue" ${p.color==='blue' ? 'selected' : ''}>青</option>
-              <option value="yellow" ${p.color==='yellow' ? 'selected' : ''}>黄</option>
-              <option value="green" ${p.color==='green' ? 'selected' : ''}>緑</option>
-            </select>
+      for (let i = 0; i < num; i++) {
+        const card = document.createElement('div');
+        card.className = 'player-card';
+        card.innerHTML = `
+          <input type="number" class="rank-input" placeholder="順位" min="1">
+          <input type="text" class="school-input" placeholder="学校名">
+          <input type="text" class="name-input" placeholder="プレイヤー名">
+
+          <div class="score-buttons">
+            <button onclick="changeScore(this, 'maru')">〇</button>
+            <button onclick="changeScore(this, 'batsu')">×</button>
+            <button onclick="resetScore(this)">リセット</button>
+            <div class="score-display">0〇 0×</div>
+          </div>
+
+          <div class="color-buttons">
+            <button onclick="setColor(this, 'red')">赤</button>
+            <button onclick="setColor(this, 'blue')">青</button>
+            <button onclick="setColor(this, 'yellow')">黄</button>
+            <button onclick="setColor(this, 'green')">緑</button>
           </div>
         `;
-        container.appendChild(div);
-      });
-    }
-
-    function getColorClass(p, index) {
-      if (p.rank == 1) return 'first';
-      if (p.rank == 2) return 'second';
-      if (p.rank == 3) return 'third';
-      return p.color;
-    }
-
-    function updateField(i, key, value) {
-      if (key === 'rank') players[i][key] = parseInt(value);
-      else players[i][key] = value;
-      renderPlayers();
-    }
-
-    function addCorrect(i) {
-      if (players[i].lose) return;
-      players[i].correct++;
-      if (players[i].correct >= 5) {
-        players[i].lose = true;
-        alert(players[i].name + " さんが勝ち抜け！");
+        container.appendChild(card);
       }
-      update(i);
     }
 
-    function addWrong(i) {
-      if (players[i].lose) return;
-      players[i].wrong++;
-      if (players[i].wrong >= 2) {
-        players[i].lose = true;
-        alert(players[i].name + " さんは失格です。");
-      }
-      update(i);
+    function changeScore(btn, type) {
+      const display = btn.parentElement.querySelector('.score-display');
+      const [maruText, batsuText] = display.textContent.split(' ');
+      let maru = parseInt(maruText) || 0;
+      let batsu = parseInt(batsuText) || 0;
+      if (type === 'maru') maru++;
+      if (type === 'batsu') batsu++;
+      display.textContent = `${maru}〇 ${batsu}×`;
     }
 
-    function resetScore(i) {
-      players[i].correct = 0;
-      players[i].wrong = 0;
-      players[i].lose = false;
-      update(i);
+    function resetScore(btn) {
+      const display = btn.parentElement.querySelector('.score-display');
+      display.textContent = `0〇 0×`;
     }
 
-    function update(i) {
-      document.getElementById(`score-${i}`).textContent = `${players[i].correct}○ ${players[i].wrong}×`;
-      document.getElementById(`lose-${i}`).textContent = players[i].lose ? "LOSE" : "";
+    function setColor(btn, color) {
+      const card = btn.closest('.player-card');
+      const pastel = {
+        red: '#ffc5c5',
+        blue: '#c5dfff',
+        yellow: '#fff7c5',
+        green: '#d0f7c5'
+      };
+      card.style.backgroundColor = pastel[color];
     }
-
-    renderPlayers();
   </script>
+
 </body>
 </html>
