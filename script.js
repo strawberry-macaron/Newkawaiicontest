@@ -1,6 +1,7 @@
 let playerCount = 4;
 let players = [];
 let scores = [];
+let winOrder = 1;
 
 const bc = new BroadcastChannel("score_channel");
 
@@ -16,13 +17,14 @@ window.onload = () => {
     e.preventDefault();
     players = [];
     scores = [];
+    winOrder = 1;
     for (let i = 0; i < playerCount; i++) {
       const name = this[`name${i}`].value;
       const school = this[`school${i}`].value;
       const rank = parseInt(this[`rank${i}`].value);
       const color = getColorByRank(rank);
       players.push({ name, school, rank, color });
-      scores.push({ correct: 0, wrong: 0 });
+      scores.push({ correct: 0, wrong: 0, finished: false });
     }
     this.style.display = "none";
     document.getElementById("players").style.display = "flex";
@@ -37,24 +39,18 @@ function generatePlayerInputs(count) {
   inputContainer.innerHTML = '';
   for (let i = 0; i < count; i++) {
     inputContainer.innerHTML += `
-      <div>
+      <div style="margin-bottom: 10px;">
         <h3>プレイヤー${i + 1}</h3>
         <label>名前: <input type="text" name="name${i}" required></label><br>
         <label>学校: <input type="text" name="school${i}" required></label><br>
-        <label>順位: <input type="number" name="rank${i}" min="1" max="100" required></label><br>
+        <label>順位: <input type="number" name="rank${i}" min="1" max="100" required></label>
       </div><hr>
     `;
   }
 }
 
 function getColorByRank(rank) {
-  if (rank === 1) return "strawberry";
-  if (rank === 2) return "candy";
-  if (rank === 3 || rank === 4) return "raspberry";
-  if (rank >= 5 && rank <= 12) return "iceblue";
-  if (rank >= 13 && rank <= 24) return "pudding";
-  if (rank >= 25 && rank <= 36) return "mint";
-  return "default";
+  return "rank-1"; // 全員赤系で統一
 }
 
 function renderPlayers() {
@@ -69,7 +65,7 @@ function renderPlayers() {
         <h4>${p.school}</h4>
         <div class="rank">${p.rank}位</div>
         <div class="score" id="score-${i}">0○ 0×</div>
-        <div class="result" id="lose-${i}"></div>
+        <div class="result" id="result-${i}"></div>
         <div class="buttons">
           <button onclick="addCorrect(${i})">○ 正解</button>
           <button onclick="addWrong(${i})">× 誤答</button>
@@ -83,23 +79,20 @@ function renderPlayers() {
 function updateDisplay(i) {
   const score = scores[i];
   const scoreDiv = document.getElementById(`score-${i}`);
-  const loseDiv = document.getElementById(`lose-${i}`);
-  const round = parseInt(localStorage.getItem("currentRoundNumber") || "1");
+  const resultDiv = document.getElementById(`result-${i}`);
 
-  let resultText = "";
-  if (round === 2) {
+  // 勝ち or 負け処理
+  if (!score.finished) {
     if (score.correct >= 5) {
-      resultText = "WIN";
+      resultDiv.textContent = `${ordinal(winOrder)} WIN 🎉`;
+      score.finished = true;
+      winOrder++;
     } else if (score.wrong >= 2) {
-      resultText = "LOSE";
-    }
-  } else {
-    if (score.wrong >= 2) {
-      resultText = "LOSE";
+      resultDiv.textContent = `LOSE 😭`;
+      score.finished = true;
     }
   }
 
-  loseDiv.textContent = resultText;
   scoreDiv.textContent = `${score.correct}○ ${score.wrong}×`;
 
   bc.postMessage({
@@ -110,18 +103,26 @@ function updateDisplay(i) {
     color: players[i].color,
     correct: score.correct,
     wrong: score.wrong,
-    lose: resultText === "LOSE"
+    result: resultDiv.textContent
   });
 }
 
 function addCorrect(i) {
+  if (scores[i].finished) return;
   scores[i].correct++;
   updateDisplay(i);
 }
 
 function addWrong(i) {
+  if (scores[i].finished) return;
   scores[i].wrong++;
   updateDisplay(i);
+}
+
+function ordinal(n) {
+  const suffix = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  return `${n}${suffix[(v - 20) % 10] || suffix[v] || suffix[0]}`;
 }
 
 // ✅ CSV取得処理
