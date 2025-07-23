@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>La confiserie qui aime jouer à cache-cache</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="round.css">
   <style>
     body {
       font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
@@ -39,15 +39,6 @@
       font-size: 1.3em;
       margin: 10px 0;
     }
-    .buttons button {
-      margin: 3px;
-      padding: 5px 10px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-    }
-    .correct { background-color: #caffbf; }
-    .wrong { background-color: #ffc9de; }
     .lose {
       color: red;
       font-weight: bold;
@@ -67,7 +58,7 @@
       const received = event.data;
       players.length = 0;
       received.forEach(p => {
-        players.push({ ...p, correct: 0, wrong: 0, lose: false });
+        players.push({ ...p, correct: p.correct || 0, wrong: p.wrong || 0, lose: p.lose || false });
       });
       renderPlayers();
     };
@@ -84,38 +75,9 @@
           <div>${p.rank}位</div>
           <div class="score" id="score-${i}">${p.correct}○ ${p.wrong}×</div>
           <div class="lose" id="lose-${i}">${p.lose ? "LOSE" : ""}</div>
-          <div class="buttons">
-            <button class="correct" onclick="addCorrect(${i})">○</button>
-            <button class="wrong" onclick="addWrong(${i})">×</button>
-          </div>
         `;
         container.appendChild(div);
       });
-    }
-
-    function addCorrect(i) {
-      if (players[i].lose) return;
-      players[i].correct++;
-      if (players[i].correct >= 5) {
-        players[i].lose = true;
-        alert(players[i].name + " さんが勝ち抜け！");
-      }
-      update(i);
-    }
-
-    function addWrong(i) {
-      if (players[i].lose) return;
-      players[i].wrong++;
-      if (players[i].wrong >= 2) {
-        players[i].lose = true;
-        alert(players[i].name + " さんは失格です。");
-      }
-      update(i);
-    }
-
-    function update(i) {
-      document.getElementById(`score-${i}`).textContent = `${players[i].correct}○ ${players[i].wrong}×`;
-      document.getElementById(`lose-${i}`).textContent = players[i].lose ? "LOSE" : "";
     }
   </script>
 </body>
