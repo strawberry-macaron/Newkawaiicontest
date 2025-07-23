@@ -102,9 +102,10 @@ h1 {
 .yellow { background-color: #fff9c4; border-color: #fdd835; }
 .green { background-color: #c8facc; border-color: #6edc87; }
 
-.rank-1 { background-color: #ffb6c1 !important; }
-.rank-2 { background-color: #ffe4e1 !important; }
-.rank-3 { background-color: #fafad2 !important; }
+.rank-1, .rank-2, .rank-3 {
+  background-color: #ffc9c9 !important;
+  border-color: #ff7f7f !important;
+}
 
 .lose {
   color: #e63946;
