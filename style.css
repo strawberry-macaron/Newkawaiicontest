@@ -11,45 +11,18 @@ h1 {
   margin-bottom: 20px;
 }
 
-form {
-  max-width: 600px;
-  margin: 0 auto;
-  background-color: #fdf4ff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 0 8px rgba(200, 200, 200, 0.2);
-}
-
-form div {
+#question-display {
+  font-size: 18px;
   margin-bottom: 20px;
-  text-align: left;
 }
 
-label {
-  display: block;
-  margin: 5px 0;
-}
-
-input[type="text"], select {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  width: 90%;
-  max-width: 300px;
-}
-
-button[type="submit"] {
-  background-color: #bde0fe;
-  border: none;
+button {
+  margin: 10px;
   padding: 10px 20px;
   border-radius: 10px;
+  border: none;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-button[type="submit"]:hover {
-  background-color: #a2d2ff;
 }
 
 #players {
@@ -76,56 +49,30 @@ button[type="submit"]:hover {
   transform: scale(1.03);
 }
 
-.player h2 {
-  font-size: 1.3em;
-  margin-bottom: 5px;
+.player .name {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 5px;
+  writing-mode: horizontal-tb;
+  text-orientation: initial;
 }
 
-.player h4 {
-  font-size: 0.9em;
-  margin-top: 0;
-  color: #555;
+.player .rank,
+.player .school,
+.player .score,
+.player .lose {
+  writing-mode: horizontal-tb;
+  text-orientation: initial;
+  margin-top: 5px;
 }
 
 .score {
   font-size: 1.4em;
-  margin: 10px 0;
   font-weight: bold;
   color: #444;
 }
 
-.buttons button {
-  font-size: 0.9em;
-  padding: 6px 12px;
-  margin: 4px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-/* ◯ボタン */
-.buttons button:first-child {
-  background-color: #b9fbc0;
-}
-
-/* ×ボタン */
-.buttons button:last-child {
-  background-color: #ffb5a7;
-}
-
-.buttons button:hover {
-  opacity: 0.85;
-}
-
-/* 順位とLOSE表示 */
-div[id^="rank-"] {
-  font-size: 1em;
-  margin-top: 5px;
-  color: #888;
-}
-
-div[id^="lose-"] {
+.lose {
   font-size: 1.2em;
   color: #e63946;
   font-weight: bold;
