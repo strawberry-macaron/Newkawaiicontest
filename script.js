@@ -64,14 +64,16 @@ function renderPlayers() {
     const playerDiv = document.createElement("div");
     playerDiv.className = `player ${p.color}`;
     playerDiv.innerHTML = `
-      <h2>${p.name}</h2>
-      <h4>${p.school}</h4>
-      <div id="rank-${i}">${p.rank}位</div>
-      <div class="score" id="score-${i}">0○ 0×</div>
-      <div id="lose-${i}" style="color:red; font-weight:bold;"></div>
-      <div class="buttons">
-        <button onclick="addCorrect(${i})">○ 正解</button>
-        <button onclick="addWrong(${i})">× 誤答</button>
+      <div class="player-content">
+        <h2>${p.name}</h2>
+        <h4>${p.school}</h4>
+        <div class="rank">${p.rank}位</div>
+        <div class="score" id="score-${i}">0○ 0×</div>
+        <div class="result" id="lose-${i}"></div>
+        <div class="buttons">
+          <button onclick="addCorrect(${i})">○ 正解</button>
+          <button onclick="addWrong(${i})">× 誤答</button>
+        </div>
       </div>
     `;
     container.appendChild(playerDiv);
