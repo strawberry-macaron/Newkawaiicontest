@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>3R β: 10up-down</title>
+  <link rel="stylesheet" href="round.css">
+  <style>
+    .score-box {
+      font-size: 1.5em;
+      margin: 10px 0;
+    }
+    .eliminated {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>3R β: 10up-down</h1>
+  <div id="question-display">(問題がまだ表示されていません)</div>
+  <div id="players"></div>
+
+  <script>
+    const bc = new BroadcastChannel("score_channel_beta");
+    let players = [];
+
+    bc.onmessage = (event) => {
+      if (event.data.type === "players") {
+        players = event.data.players.map(p => ({
+          ...p,
+          score: 0,
+          wrongs: 0,
+          maxWrongs: 2,
+          eliminated: false
+        }));
+        renderPlayers();
+      }
+    };
+
+    function renderPlayers() {
+      const container = document.getElementById("players");
+      container.innerHTML = "";
+      players.forEach((p, i) => {
+        const div = document.createElement("div");
+        div.className = `player ${p.color}`;
+        div.innerHTML = `
+          <h2>${p.name}</h2>
+          <h4>${p.school}</h4>
+          <div class="score-box" id="score-${i}">0 点</div>
+          <div class="eliminated" id="eliminated-${i}"></div>
+          <div class="buttons">
+            <button class="correct" onclick="addCorrect(${i})">○ 正解</button>
+            <button class="wrong" onclick="addWrong(${i})">× 誤答</button>
+            <button class="bonus" onclick="addJoshi(${i})">女子問正解</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function update(i) {
+      const p = players[i];
+      const scoreBox = document.getElementById(`score-${i}`);
+      const eliminatedBox = document.getElementById(`eliminated-${i}`);
+      scoreBox.textContent = `${p.score} 点`;
+      eliminatedBox.textContent = p.eliminated ? "LOSE" : "";
+
+      bc.postMessage({ type: "update", players });
+    }
+
+    function addCorrect(i) {
+      const p = players[i];
+      if (p.eliminated) return;
+      p.score++;
+      if (p.score >= 10) {
+        p.eliminated = true;
+        alert(`${p.name} さんが勝ち抜け！`);
+      }
+      update(i);
+    }
+
+    function addWrong(i) {
+      const p = players[i];
+      if (p.eliminated) return;
+      p.score = 0;
+      p.wrongs++;
+      if (p.wrongs >= p.maxWrongs) {
+        p.eliminated = true;
+        alert(`${p.name} さんは失格です。`);
+      }
+      update(i);
+    }
+
+    function addJoshi(i) {
+      const p = players[i];
+      if (p.eliminated) return;
+      p.maxWrongs = Math.min(2, p.maxWrongs + 1);
+      alert(`${p.name} さんの誤答可能回数が +1 されました（最大2回まで）`);
+      update(i);
+    }
+  </script>
+</body>
+</html>
