@@ -84,10 +84,17 @@ function updateDisplay(i) {
   // 勝ち or 負け処理
   if (!score.finished) {
     if (score.correct >= 5) {
-      resultDiv.textContent = `${ordinal(winOrder)} WIN 🎉`;
-      score.finished = true;
-      winOrder++;
-    } else if (score.wrong >= 2) {
+  resultDiv.textContent = `${ordinal(winOrder)} WIN 🎉`;
+
+  // 🎀 リボンを作成して追加
+  const ribbon = document.createElement("div");
+  ribbon.className = "ribbon";
+  ribbon.textContent = `${ordinal(winOrder)} 🎀`;
+  resultDiv.appendChild(ribbon);
+
+  score.finished = true;
+  winOrder++;
+}else if (score.wrong >= 2) {
       resultDiv.innerHTML = `
         <div class="disqualified">
           <img src="https://raw.githubusercontent.com/strawberry-macaron/Newkawaiicontest/main/shikkaku_text.png" alt="失格" style="width: 80px; animation: pop 0.5s ease;">
