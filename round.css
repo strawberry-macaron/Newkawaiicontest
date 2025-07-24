@@ -112,6 +112,28 @@ h1 {
   font-weight: bold;
   font-size: 1em;
 }
+.popup {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  animation: fadePopup 1s ease, disappear 1s ease 2s forwards;
+  z-index: 10;
+}
+
+@keyframes fadePopup {
+  from { opacity: 0; transform: translateX(-50%) scale(0.8); }
+  to   { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+@keyframes disappear {
+  to { opacity: 0; }
+}
 
 .confirm-button {
   writing-mode: horizontal-tb;
