@@ -88,7 +88,11 @@ function updateDisplay(i) {
       score.finished = true;
       winOrder++;
     } else if (score.wrong >= 2) {
-      resultDiv.textContent = `LOSE 😭`;
+      resultDiv.innerHTML = `
+        <div class="disqualified">
+          <img src="https://raw.githubusercontent.com/strawberry-macaron/Newkawaiicontest/main/shikkaku_text.png" alt="失格" style="width: 80px; animation: pop 0.5s ease;">
+        </div>
+      `;
       score.finished = true;
     }
   }
