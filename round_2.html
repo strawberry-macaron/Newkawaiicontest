@@ -140,6 +140,7 @@
     <div class="button-group">
       <button onclick="toggleQuestion()">問題文を表示/非表示</button>
       <button onclick="toggleAnswer()">答えを表示/非表示</button>
+      <button onclick="nextQuestion()">次の問題へ</button>
     </div>
   </div>
 
@@ -282,7 +283,12 @@
       card.classList.remove("red", "blue", "yellow", "green");
       card.classList.add(color);
     }
-
+    function nextQuestion() {
+      let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "1",10);
+      currentIndex++;
+      localStorage.setItem("currentQuestionNumber", currentIndex);
+      location.reload(); // 次の問題を表示するためリロード
+    }
     function fetchAndDisplayQuestion() {
       fetch(CSV_URL)
         .then(res => res.text())
