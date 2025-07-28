@@ -158,6 +158,7 @@
     <div class="button-group">
       <button onclick="toggleQuestion()">問題文を表示/非表示</button>
       <button onclick="toggleAnswer()">答えを表示/非表示</button>
+      <button onclick="prevQuestion()">前の問題へ</button>
       <button onclick="nextQuestion()">次の問題へ</button>
     </div>
   </div>
@@ -307,6 +308,12 @@
       const card = btn.closest(".card");
       card.classList.remove("red", "blue", "yellow", "green");
       card.classList.add(color);
+    }
+    function prevQuestion() {
+      let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "1", 10);
+      currentIndex = Math.max(1, currentIndex - 1); // 1未満にはならないように
+      localStorage.setItem("currentQuestionNumber", currentIndex);
+      location.reload(); // 前の問題を表示するためリロード
     }
     function nextQuestion() {
       let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "1",10);
