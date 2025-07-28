@@ -297,6 +297,7 @@
           document.getElementById("question-number").textContent = `第${index}問`;
           document.getElementById("question-text").textContent = question;
           document.getElementById("answer-text").textContent = answer;
+          toggleAnswer();
 
           updateQuestionVisibility();
         });
