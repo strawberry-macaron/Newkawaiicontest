@@ -129,20 +129,22 @@
       margin: 10px;
     }
     .disqualification-message {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 60px;
+      position: absolute;
+      top: 10px;
+      left: -25px;
+      transform: rotate(-45deg);
+      font-size: 24px;
       font-weight: bold;
-      color: red;
-      background: rgba(255, 255, 255, 0.85);
-      padding: 30px 50px;
-      border-radius: 10px;
-      z-index: 9999;
+      color: white;
+      background: red;
+      padding: 5px 40px;
+      border-radius: 5px;
+      z-index: 5;
       text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+      pointer-events: none;
     }
+
     
   </style>
 </head>
