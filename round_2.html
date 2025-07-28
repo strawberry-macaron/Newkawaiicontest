@@ -214,7 +214,6 @@
           <input placeholder="順位" class="rank-input">
           <input placeholder="学校名" class="school-input">
           <input placeholder="プレイヤー名" class="name-input">
-          <span class="disqualification-message">失格</span>
           <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
           <div class="display-info"></div>
           <div class="controls">
@@ -283,6 +282,13 @@
 
       if (batsu >= 2) {
         card.classList.add("failed");
+
+        if (!card.querySelector(".disqualification-message")) {
+          const disqLabel = document.createElement("span");
+          disqLabel.className = "disqualification-message";
+          disqLabel.textContent = "失格";
+          card.appendChild(disqLabel);
+        }
         const failTag = document.createElement("div");
         failTag.innerHTML = `<span style='color:red;font-weight:bold;'>失格</span>`;
         info.appendChild(failTag);
@@ -307,6 +313,15 @@
       currentIndex++;
       localStorage.setItem("currentQuestionNumber", currentIndex);
       location.reload(); // 次の問題を表示するためリロード
+    }
+    function showDisqualificationOnCard(index) {
+      const card = document.getElementById(`player-${index}`);
+      if (card && !card.querySelector(".disqualification-message")) {
+        const label = document.createElement("span");
+        label.className = "disqualification-message";
+        label.textContent = "失格";
+        card.appendChild(label);
+      }
     }
     function fetchAndDisplayQuestion() {
       fetch(CSV_URL)
