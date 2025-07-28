@@ -128,6 +128,23 @@
     .button-group {
       margin: 10px;
     }
+    .disqualified-messeage {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 60px;
+      font-weight: bold;
+      color: red;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 30px 50px;
+      border-radius: 10px;
+      z-index: 9999;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    
   </style>
 </head>
 <body>
@@ -196,6 +213,7 @@
           <input placeholder="順位" class="rank-input">
           <input placeholder="学校名" class="school-input">
           <input placeholder="プレイヤー名" class="name-input">
+          <span id=disqualification-message">失格</span>
           <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
           <div class="display-info"></div>
           <div class="controls">
