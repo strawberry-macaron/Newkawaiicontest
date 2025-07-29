@@ -146,6 +146,19 @@
       white-space: nowrap;
       writing-mode: horizontal-tb;
     }
+    .ribbon-image {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: auto;
+      z-index: 10;
+      pointer-events: none;
+     }
+    .card {
+      position: relative; /* 必須：リボンを重ねるため */
+     }
 
     
   </style>
@@ -187,6 +200,13 @@
   <div class="players" id="player-container"></div>
 
   <script>
+    const ribbonImages = {
+      1: "https://imgur.com/a/MrNUz9R",//ピンクの水玉（一番に勝ち抜け）
+      2: "https://imgur.com/a/NDeKtq6",//水色の水玉
+      3: "https://imgur.com/a/lZ8ZpId",//黄色の水玉
+      4: "https://imgur.com/a/xkpsDmI",//緑の水玉
+      5: "https://imgur.com/a/kJWXu0y",//紫の水玉
+      default: "https://imgur.com/a/TOFOPJJ"//白（六番以降に勝ち抜け）
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
 
     let showQuestion = true;
@@ -277,10 +297,22 @@
       const info = card.querySelector(".display-info");
 
       if (maru >= 5) {
+        if (card.quarySelector(".ribbon-image")) return;
+        
         card.classList.add("finished");
+
+        const rank = currentRank;
+        const info = card.querySelector(".display-info");
+        
         const rankTag = document.createElement("div");
         rankTag.innerHTML = `<strong>${ordinal(currentRank)}</strong>`;
         info.appendChild(rankTag);
+
+        const ribbon = document.createElement("img");
+        ribbon.src = ribbonImages[rank] || ribbonImages["default"];
+        ribbon.className = "ribbon-image";
+        card.appendChild(ribbon);
+        
         currentRank++;
         lockCard(card);
         return;
