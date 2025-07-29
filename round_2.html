@@ -254,6 +254,8 @@
       info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
 
+      const index = Array.from(document.querySelectorAll(".card")).indexOf(card); // 何番目のカードか取得
+
   // 保存対象データ
        const playerData = {
         name: name,
