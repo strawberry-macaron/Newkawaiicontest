@@ -298,12 +298,11 @@
       const info = card.querySelector(".display-info");
 
       if (maru >= 5) {
-        if (card.quarySelector(".ribbon-image")) return;
+        if (card.querySelector(".ribbon-image")) return;
         
         card.classList.add("finished");
 
         const rank = currentRank;
-        const info = card.querySelector(".display-info");
         
         const rankTag = document.createElement("div");
         rankTag.innerHTML = `<strong>${ordinal(currentRank)}</strong>`;
