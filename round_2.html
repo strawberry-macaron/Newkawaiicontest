@@ -207,14 +207,6 @@
   <div class="players" id="player-container"></div>
 
   <script>
-    const ribbonImages = {
-      1: "https://i.imgur.com/PbwGpHp.png",     // ピンクの水玉（1位）
-      2: "https://i.imgur.com/9bxlL1P.png",     // 水色の水玉（2位）
-      3: "https://i.imgur.com/k0nbM4C.png",   // 黄色の水玉（3位）
-      4: "https://i.imgur.com/Ssar1p6.png",    // 緑の水玉（4位）
-      5: "https://i.imgur.com/mpx0NUe.png",   // 紫の水玉（5位）
-      default: "https://i.imgur.com/YOUR_WHITE_ID.png" // 白の水玉（6位以降）
-    };
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
 
     let showQuestion = true;
@@ -242,13 +234,21 @@
       container.innerHTML = "";
 
       for (let i = 0; i < count; i++) {
-        const card = document.createElement("div");
+         const card = document.createElement("div");
+         const emptyPlayer = {
+         name: "",
+         school: "",
+         rank: null,
+         score: { maru: 0, batsu: 0 },
+         color: ""
+       };
+        localStorage.setItem(`player_${i}`, JSON.stringify(emptyPlayer))
         card.className = "card";
         card.innerHTML = `
           <input placeholder="順位" class="rank-input">
           <input placeholder="学校名" class="school-input">
           <input placeholder="プレイヤー名" class="name-input">
-          <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
+          <button class="confirm-button" onclick="confirmPlayer(this, ${i})">決定</button>
           <div class="display-info"></div>
           <div class="controls">
             <button onclick="addScore(this, 'maru')">〇</button>
@@ -273,9 +273,21 @@
       const school = card.querySelector(".school-input").value;
       const name = card.querySelector(".name-input").value;
       const info = card.querySelector(".display-info");
+      // 表示切り替え
       info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
+
+  // 保存対象データ
+       const playerData = {
+        name: name,
+        school: school,
+        rank: rank
+       };
+
+  // ローカルストレージに保存（例：player_0, player_1...）
+      localStorage.setItem(`player_${index}`, JSON.stringify(playerData));
     }
+  
 
     function ordinal(n) {
       const s = ["th", "st", "nd", "rd"];
