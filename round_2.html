@@ -99,9 +99,6 @@
       cursor: pointer;
     }
 
-    .rank-1, .rank-2, .rank-3 {
-      background-color: #ffc9c9 !important;
-    }
 
     .red { background-color: #ffc9c9; border-color: #ff7f7f; }
     .blue { background-color: #cce0ff; border-color: #6699ff; }
@@ -245,7 +242,7 @@
         localStorage.setItem(`player_${i}`, JSON.stringify(emptyPlayer))
         card.className = "card";
         card.innerHTML = `
-          <input placeholder="順位" class="rank-input">
+          <input placeholder="順位" type="number" class="rank-input">
           <input placeholder="学校名" class="school-input">
           <input placeholder="プレイヤー名" class="name-input">
           <button class="confirm-button" onclick="confirmPlayer(this, ${i})">決定</button>
