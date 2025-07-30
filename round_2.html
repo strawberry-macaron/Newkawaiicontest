@@ -178,7 +178,7 @@
       <option value="11">11人</option>
       <option value="12">12人</option>
     </select>
-    <button onclick="generatePlayers()">決定</button>
+     <button onclick="onPlayerCountConfirmed()">決定</button>
   </div>
 
   <div class="players" id="player-container"></div>
@@ -189,7 +189,7 @@
     let showQuestion = true;
     let showAnswer = true;
     let currentRank = 1;
-
+    
     function toggleQuestion() {
       showQuestion = !showQuestion;
       updateQuestionVisibility();
@@ -205,63 +205,34 @@
       document.getElementById("answer-text").style.display = showAnswer ? "block" : "none";
     }
 
-    function generatePlayers() {
-      const container = document.getElementById("player-container");
-      container.innerHTML = "";
+    function generatePlayers(count) {
+  const container = document.getElementById("player-container");
+  container.innerHTML = "";
 
-      const savedCount = parseInt(localStorage.getItem("playerCount")) || 0;
+  // 人数が指定されていない場合 → 復元
+  if (typeof count === "undefined") {
+    const savedCount = parseInt(localStorage.getItem("playerCount")) || 0;
 
-      if (savedCount > 0) {
-    // 🔁 保存データから復元
-        for (let i = 0; i < savedCount; i++) {
-          const data = JSON.parse(localStorage.getItem(`player_${i}`));
-          if (!data) continue;
+    for (let i = 0; i < savedCount; i++) {
+      const data = JSON.parse(localStorage.getItem(`player_${i}`));
+      if (!data) continue;
 
-          const card = document.createElement("div");
-          card.className = "card show";
-          if (data.color) card.classList.add(data.color);
-
-          card.innerHTML = `
-            <div class="display-info">
-              <strong>${data.name}</strong><br>
-              ${data.school}<br>
-              ${data.rank}位
-            </div>
-            <div class="controls">
-              <button onclick="addScore(this, 'maru')">〇</button>
-              <button onclick="addScore(this, 'batsu')">×</button>
-              <button onclick="resetScore(this)">リセット</button>
-            </div>
-            <div class="score">〇<span class="maru">${data.maru || 0}</span> ×<span class="batsu">${data.batsu || 0}</span></div>
-            <div class="color-buttons">
-              <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
-              <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
-              <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
-              <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
-            </div>
-      `    ;
-          container.appendChild(card);
-        }
-  } else {
-    // 🆕 新しくカードを作成
-    const count = parseInt(document.getElementById("player-count").value);
-    localStorage.setItem("playerCount", count); // 初回のみ記録
-
-    for (let i = 0; i < count; i++) {
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "card show";
+      if (data.color) card.classList.add(data.color);
+
       card.innerHTML = `
-        <input placeholder="順位" class="rank-input">
-        <input placeholder="学校名" class="school-input">
-        <input placeholder="プレイヤー名" class="name-input">
-        <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
-        <div class="display-info"></div>
+        <div class="display-info">
+          <strong>${data.name}</strong><br>
+          ${data.school}<br>
+          ${data.rank}位
+        </div>
         <div class="controls">
           <button onclick="addScore(this, 'maru')">〇</button>
           <button onclick="addScore(this, 'batsu')">×</button>
           <button onclick="resetScore(this)">リセット</button>
         </div>
-        <div class="score">〇<span class="maru">0</span> ×<span class="batsu">0</span></div>
+        <div class="score">〇<span class="maru">${data.maru || 0}</span> ×<span class="batsu">${data.batsu || 0}</span></div>
         <div class="color-buttons">
           <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
           <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
@@ -271,6 +242,47 @@
       `;
       container.appendChild(card);
     }
+
+    return; // 復元が終わったので終了
+  }
+
+  // 人数が指定された場合 → 新規生成
+  localStorage.setItem("playerCount", count);
+
+  for (let i = 0; i < count; i++) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const emptyPlayer = {
+      name: "",
+      school: "",
+      rank: "",
+      maru: 0,
+      batsu: 0,
+      color: ""
+    };
+    localStorage.setItem(`player_${i}`, JSON.stringify(emptyPlayer));
+
+    card.innerHTML = `
+      <input placeholder="順位" class="rank-input">
+      <input placeholder="学校名" class="school-input">
+      <input placeholder="プレイヤー名" class="name-input">
+      <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
+      <div class="display-info"></div>
+      <div class="controls">
+        <button onclick="addScore(this, 'maru')">〇</button>
+        <button onclick="addScore(this, 'batsu')">×</button>
+        <button onclick="resetScore(this)">リセット</button>
+      </div>
+      <div class="score">〇<span class="maru">0</span> ×<span class="batsu">0</span></div>
+      <div class="color-buttons">
+        <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
+        <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
+        <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
+        <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
+      </div>
+    `;
+    container.appendChild(card);
   }
 }
 
@@ -303,6 +315,10 @@
       const v = n % 100;
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     }
+    function onPlayerCountConfirmed() {
+  const count = parseInt(document.getElementById("player-count").value);
+  generatePlayers(count); // ← 人数指定して新しく生成
+}
 
     function lockCard(card) {
       card.querySelectorAll("button").forEach(btn => btn.disabled = true);
