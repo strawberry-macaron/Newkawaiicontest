@@ -338,6 +338,13 @@
 
       maruSpan.textContent = maru;
       batsuSpan.textContent = batsu;
+      const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+      const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+
+      data.maru = maru;
+  data.batsu = batsu;
+
+      localStorage.setItem(`player_${index}`, JSON.stringify(data));
 
       const info = card.querySelector(".display-info");
 
@@ -382,10 +389,17 @@
     }
 
     function changeColor(btn, color) {
-      const card = btn.closest(".card");
-      card.classList.remove("red", "blue", "yellow", "green");
-      card.classList.add(color);
-    }
+  const card = btn.closest(".card");
+  card.classList.remove("red", "blue", "yellow", "green");
+  card.classList.add(color);
+
+  // ★ 色を保存
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+
+  data.color = color;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
     function prevQuestion() {
       let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "1", 10);
       currentIndex = Math.max(1, currentIndex - 1); // 1未満にはならないように
