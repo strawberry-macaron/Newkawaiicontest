@@ -127,7 +127,7 @@
     }
     .disqualification-message {
       position: absolute;
-      top: 10px;
+      top: 150px;
       left: -25px;
       transform: rotate(-45deg);
       font-size: 24px;
@@ -143,7 +143,24 @@
       white-space: nowrap;
       writing-mode: horizontal-tb;
     }
-
+.rank-tag {
+      position: absolute;
+      top: 150px;
+      left: -25px;
+      transform: rotate(-45deg);
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      background: #ffc0cb;
+      padding: 5px 40px;
+      border-radius: 5px;
+      z-index: 5;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+      pointer-events: none;
+      white-space: nowrap;
+      writing-mode: horizontal-tb;
+    }
     
   </style>
 </head>
@@ -317,17 +334,29 @@
   maruSpan.textContent = maru;
   batsuSpan.textContent = batsu;
 
+    function ordinal(n) {
+  if (n === 1) return "1st";
+  if (n === 2) return "2nd";
+  if (n === 3) return "3rd";
+  return `${n}th`;
+}
+
   if (maru >= 5) {
-    if (card.classList.contains("finished")) return;
+  if (card.classList.contains("finished")) return;
 
-    card.classList.add("finished");
+  card.classList.add("finished");
 
-    const rankTag = document.createElement("div");
-    rankTag.innerHTML = `<strong>${ordinal(currentRank)}</strong>`;
-    info.appendChild(rankTag);
-    currentRank++;
-    lockCard(card);
-  }
+  const info = card.querySelector(".display-info");
+
+  // 順位タグの表示（1st, 2nd, 3rd, ...）
+  const rankTag = document.createElement("div");
+  rankTag.className = "rank-tag";
+  rankTag.innerHTML = `<strong>${ordinal(currentRank)}</strong>`;
+  info.appendChild(rankTag);
+
+  currentRank++;
+  lockCard(card);
+}
 
   if (batsu >= 2) {
     if (card.classList.contains("failed")) return;
@@ -340,10 +369,6 @@
       disqLabel.textContent = "失格";
       card.appendChild(disqLabel);
     }
-
-    const failTag = document.createElement("div");
-    failTag.innerHTML = `<span style='color:red;font-weight:bold;'>失格</span>`;
-    info.appendChild(failTag);
 
     lockCard(card);
   }
