@@ -1,1 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Ex Round 表示画面</title>
+  <style>
+    body {
+      background-color: #fdebf0;
+      font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
 
+    h1 {
+      color: #b56fdc;
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    #question-area {
+      margin-bottom: 20px;
+    }
+
+    #question-number {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    #question-text {
+      font-size: 1em;
+      margin-bottom: 5px;
+    }
+
+    #answer-text {
+      font-size: 0.9em;
+      color: red;
+    }
+
+    #player-count {
+      margin: 10px;
+    }
+
+    .players {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 90px;
+      height: 420px;
+      border: 4px solid #90ee90;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 5px;
+      position: relative;
+    }
+
+    .card input {
+      width: 90%;
+      font-size: 14px;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      background: transparent;
+      text-align: center;
+      margin: 4px 0;
+    }
+
+    .controls, .color-buttons, .confirm-button {
+      writing-mode: horizontal-tb;
+    }
+
+    .score {
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .color-buttons {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .color-button {
+      padding: 4px 8px;
+      font-size: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+
+    .red { background-color: #ffc9c9; border-color: #ff7f7f; }
+    .blue { background-color: #cce0ff; border-color: #6699ff; }
+    .yellow { background-color: #fff9c4; border-color: #fdd835; }
+    .green { background-color: #c8facc; border-color: #6edc87; }
+
+    .card.show input,
+    .card.show .confirm-button {
+      display: none;
+    }
+
+    .card .display-info {
+      display: none;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .card.show .display-info {
+      display: block;
+      text-align: center;
+      white-space: normal;
+    }
+
+    .button-group {
+      margin: 10px;
+    }
+    .disqualification-message {
+      position: absolute;
+      top: 150px;
+      left: -25px;
+      transform: rotate(-45deg);
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      background: #FF1493;
+      padding: 5px 40px;
+      border-radius: 5px;
+      z-index: 5;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+      pointer-events: none;
+      white-space: nowrap;
+      writing-mode: horizontal-tb;
+    }
+.rank-label {
+      position: absolute;
+      top: 150px;
+      left: -25px;
+      transform: rotate(-45deg);
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      background: #ffc0cb;
+      padding: 5px 40px;
+      border-radius: 5px;
+      z-index: 5;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+      pointer-events: none;
+      white-space: nowrap;
+      writing-mode: horizontal-tb;
+    }
+    .rank-1 {
+  background-color: #f8a2d3;
+  color: white;
+}
+
+.rank-2 {
+  background-color: #9cecf0;
+  color: white;
+}
+
+.rank-3 {
+  background-color: #fff08a;
+  color: #333;
+}
+
+.rank-4{
+  background-color: #7fffd4
+  color : white;
+}
+
+.rank-other {
+  background-color: #7fffd4;
+  color: white;
+}
+
+  
+    
+  </style>
+</head>
+<body>
+  <h1>Ex Round 表示画面</h1>
+
+  <div id="question-area">
+    <div id="question-number">問題番号</div>
+    <div id="question-text">問題文を読み込み中...</div>
+    <div id="answer-text">答えを読み込み中...</div>
+    <div class="button-group">
+      <button onclick="toggleQuestion()">問題文を表示/非表示</button>
+      <button onclick="toggleAnswer()">答えを表示/非表示</button>
+      <button onclick="prevQuestion()">前の問題へ</button>
+      <button onclick="nextQuestion()">次の問題へ</button>
+    </div>
+  </div>
+
+  <div>
+    人数を選んでください：
+    <select id="player-count">
+      <option value="1">1人</option>
+      <option value="2">2人</option>
+      <option value="3">3人</option>
+      <option value="4">4人</option>
+      <option value="5" selected>5人</option>
+      <option value="6">6人</option>
+      <option value="7">7人</option>
+      <option value="8">8人</option>
+      <option value="9">9人</option>
+      <option value="10">10人</option>
+      <option value="11">11人</option>
+      <option value="12">12人</option>
+    </select>
+     <button onclick="onPlayerCountConfirmed()">決定</button>
+  </div>
+  <label for="question-selector">問題番号を選択：</label>
+<select id="question-selector">
+  <!-- JSで問題数に応じて自動追加 -->
+</select>
+
+
+  <div class="players" id="player-container"></div>
+
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
+
+    let showQuestion = true;
+    let showAnswer = true;
+    let currentRank = 1;
+    
+    function toggleQuestion() {
+      showQuestion = !showQuestion;
+      updateQuestionVisibility();
+    }
+
+    function toggleAnswer() {
+      showAnswer = !showAnswer;
+      updateQuestionVisibility();
+    }
+
+    function updateQuestionVisibility() {
+      document.getElementById("question-text").style.display = showQuestion ? "block" : "none";
+      document.getElementById("answer-text").style.display = showAnswer ? "block" : "none";
+    }
+    
+    function initializeQuestionSelector(totalQuestions) {
+  const selector = document.getElementById("question-selector");
+  selector.innerHTML = ""; // 既存オプション削除
+
+  for (let i = 1; i <= totalQuestions; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = `第${i}問`;
+    selector.appendChild(option);
+  }
+
+  // 現在の問題にあわせて選択状態にする
+  const current = parseInt(localStorage.getItem("currentQuestionNumber") || "1", 10);
+  selector.value = current;
+}
+  document.getElementById("question-selector").addEventListener("change", function () {
+  const selected = parseInt(this.value, 10);
+  localStorage.setItem("currentQuestionNumber", selected);
+  location.reload(); // または fetchAndDisplayQuestion() を直接呼んでもOK
+});
+    
+ function generatePlayers(count) {
+  const container = document.getElementById("players");
+  container.innerHTML = "";
+ let savedCount = 0;
+
+    // 保存データの数を数える
+  while (localStorage.getItem(`player_${savedCount}`)) {
+    savedCount++;
+  }
+
+  // 指定がない場合は保存された人数を使う
+  if (typeof count === "undefined" || count === null) {
+    count = savedCount;
+  } else {
+    // 人数が指定されている場合 → 既存データをすべてクリア
+    for (let i = 0; i < savedCount; i++) {
+      localStorage.removeItem(`player_${i}`);
+    }
+  }
+
+  for (let i = 0; i < count; i++) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.id = `player-${i}`;
+
+    // localStorageから復元する（なければデフォルト）
+    const data = JSON.parse(localStorage.getItem(`player_${i}`)) || {
+      name: "",
+      school: "",
+      rank: "",
+      color: "",
+      correct: 0,
+      penalty: 10,
+      isBomb: false,
+      finished: false,
+      failed: false
+    };
+
+    card.innerHTML = `
+      <div class="info">
+        <input placeholder="順位" class="rank-input" value="${data.rank || ""}">
+        <input placeholder="学校名" class="school-input" value="${data.school || ""}">
+        <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
+      </div>
+      <div class="score">
+        <div>○: <span class="maru">${data.correct}</span></div>
+        <div>誤答ポイント: <span class="penalty-points">${data.penalty}</span></div>
+        <div class="display-info"></div>
+        <button onclick="addBomberScore(this.closest('.card'), 'correct')">○正解</button>
+        <button onclick="addBomberScore(this.closest('.card'), 'wrong', false)">×ボタンなし</button>
+        <button onclick="addBomberScore(this.closest('.card'), 'wrong', true)">×ボタンあり</button>
+      </div>
+      <div class="color-buttons">
+        <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
+        <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
+        <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
+        <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
+      </div>
+    `;
+  
+
+    // 色・状態の反映
+    if (data.color) card.classList.add(data.color);
+    if (data.isBomb) card.classList.add("bomb");
+    if (data.finished) card.classList.add("finished");
+    if (data.failed) card.classList.add("failed");
+
+    // ランク表示や失格表示
+    const info = card.querySelector(".display-info");
+    if (data.finished) {
+      const tag = document.createElement("div");
+      tag.textContent = `${ordinal(currentRank)} WIN 🎉`;
+      info.appendChild(tag);
+      currentRank++;
+      lockCard(card);
+    }
+    if (data.failed) {
+      const tag = document.createElement("div");
+      tag.className = "disqualification-message";
+      tag.textContent = "失格";
+      info.appendChild(tag);
+      lockCard(card);
+    }
+
+    // 入力イベントで保存
+    card.querySelector(".name-input").addEventListener("input", () => savePlayerData(i));
+    card.querySelector(".school-input").addEventListener("input", () => savePlayerData(i));
+    card.querySelector(".rank-input").addEventListener("input", () => savePlayerData(i));
+
+    container.appendChild(card);
+  }
+}
+
+    function confirmPlayer(btn) {
+      const card = btn.closest(".card");
+      const rank = card.querySelector(".rank-input").value;
+      const school = card.querySelector(".school-input").value;
+      const name = card.querySelector(".name-input").value;
+      const info = card.querySelector(".display-info");
+      // 表示切り替え
+      info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
+      card.classList.add("show");
+
+      const index = Array.from(document.querySelectorAll(".card")).indexOf(card); // 何番目のカードか取得
+
+  // 保存対象データ
+       const playerData = {
+        name: name,
+        school: school,
+        rank: rank
+       };
+
+  // ローカルストレージに保存（例：player_0, player_1...）
+      localStorage.setItem(`player_${index}`, JSON.stringify(playerData));
+    }
+    function savePlayerData(index) {
+  const card = document.getElementById(`player-${index}`);
+  const name = card.querySelector(".name-input").value;
+  const school = card.querySelector(".school-input").value;
+  const rank = card.querySelector(".rank-input").value;
+  const maru = parseInt(card.querySelector(".maru").textContent);
+  const penalty = parseInt(card.querySelector(".penalty-points").textContent);
+
+  const color = [...card.classList].find(c => ["red", "blue", "yellow", "green"].includes(c));
+  const isBomb = card.classList.contains("bomb");
+  const finished = card.classList.contains("finished");
+  const failed = card.classList.contains("failed");
+
+  const data = {
+    name,
+    school,
+    rank,
+    correct: maru,
+    penalty,
+    color: color || "",
+    isBomb,
+    finished,
+    failed
+  };
+
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
+  function applyScoreAndStatus(card, maru, batsu) {
+  const maruSpan = card.querySelector(".maru");
+  const batsuSpan = card.querySelector(".batsu");
+  const info = card.querySelector(".display-info");
+
+  maruSpan.textContent = maru;
+  batsuSpan.textContent = batsu;
+
+    function ordinal(n) {
+  if (n === 1) return "1st";
+  if (n === 2) return "2nd";
+  if (n === 3) return "3rd";
+  return `${n}th`;
+}
+
+  if (maru >= 3) {
+  if (card.classList.contains("finished")) return;
+
+  card.classList.add("finished");
+
+  const info = card.querySelector(".display-info");
+
+  // ラベルのテキストとクラスを順位に応じて設定
+  const rankText = ordinal(currentRank);
+  const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
+
+  const label = document.createElement("div");
+  label.className = `rank-label ${rankClass}`;
+  label.textContent = rankText;
+
+  info.appendChild(label); // 表示エリアに追加
+
+  currentRank++;
+  lockCard(card);
+}
+
+  if (batsu >= 1) {
+    if (card.classList.contains("failed")) return;
+
+    card.classList.add("failed");
+
+    if (!card.querySelector(".disqualification-message")) {
+      const disqLabel = document.createElement("span");
+      disqLabel.className = "disqualification-message";
+      disqLabel.textContent = "失格";
+      card.appendChild(disqLabel);
+    }
+
+    lockCard(card);
+  }
+}
+    function addScore(btn, type) {
+  const card = btn.closest(".card");
+  if (card.classList.contains("finished") || card.classList.contains("failed")) return;
+
+  const maruSpan = card.querySelector(".maru");
+  const batsuSpan = card.querySelector(".batsu");
+  let maru = parseInt(maruSpan.textContent);
+  let batsu = parseInt(batsuSpan.textContent);
+
+  if (type === 'maru') maru++;
+  if (type === 'batsu') batsu++;
+
+  // 保存
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+  data.maru = maru;
+  data.batsu = batsu;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+
+  // 状態反映
+  applyScoreAndStatus(card, maru, batsu);
+}
+
+    function ordinal(n) {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+    function onPlayerCountConfirmed() {
+  const count = parseInt(document.getElementById("player-count").value);
+  generatePlayers(count); // ← 人数指定して新しく生成
+}
+    function addBomberScore(card, type, hasButton) {
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
+    correct: 0,
+    penalty: 10,
+    isBomb: false
+  };
+
+  if (type === "correct") {
+    data.correct += 1;
+    if (data.isBomb) {
+      data.isBomb = false; // 爆弾解除
+      card.classList.remove("bomb");
+    }
+  } else if (type === "wrong") {
+    if (!data.isBomb) {
+      data.isBomb = true;
+      card.classList.add("bomb");
+    } else {
+      data.penalty -= hasButton ? 3 : 1;
+    }
+  }
+
+  // 更新表示
+  card.querySelector(".penalty-points").textContent = data.penalty;
+
+  // 勝ち抜け
+  if (data.correct >= 10) {
+    card.classList.add("finished");
+    lockCard(card);
+  }
+
+  // 失格
+  if (data.penalty <= 0) {
+    card.classList.add("failed");
+    lockCard(card);
+    if (!card.querySelector(".disqualification-message")) {
+      const disq = document.createElement("div");
+      disq.className = "disqualification-message";
+      disq.textContent = "失格";
+      card.appendChild(disq);
+    }
+  }
+
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
+
+    function lockCard(card) {
+      card.querySelectorAll("button").forEach(btn => btn.disabled = true);
+    }
+
+    function resetScore(btn) {
+      const card = btn.closest(".card");
+      card.querySelector(".maru").textContent = "0";
+      card.querySelector(".batsu").textContent = "0";
+    }
+
+    function changeColor(btn, color) {
+  const card = btn.closest(".card");
+  card.classList.remove("red", "blue", "yellow", "green");
+  card.classList.add(color);
+
+  // ★ 色を保存
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+
+  data.color = color;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
+    function prevQuestion() {
+      let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "1", 10);
+      currentIndex = Math.max(1, currentIndex - 1); // 1未満にはならないように
+      localStorage.setItem("currentQuestionNumber", currentIndex);
+      location.reload(); // 前の問題を表示するためリロード
+    }
+    function nextQuestion() {
+      let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "1",10);
+      currentIndex++;
+      localStorage.setItem("currentQuestionNumber", currentIndex);
+      location.reload(); // 次の問題を表示するためリロード
+    }
+    function showDisqualificationOnCard(index) {
+      const card = document.getElementById(`player-${index}`);
+      if (card && !card.querySelector(".disqualification-message")) {
+        const label = document.createElement("span");
+        label.className = "disqualification-message";
+        label.textContent = "失格";
+        card.appendChild(label);
+      }
+    }
+    function fetchAndDisplayQuestion() {
+      fetch(CSV_URL)
+        .then(res => res.text())
+        .then(text => {
+          
+          const rows = text.trim().split("\n").map(r => r.split(","));
+          initializeQuestionSelector(rows.length - 1); // 見出しがあれば -1
+          const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 1;
+          if (index >= rows.length) return;
+
+          const question = rows[index][2];
+          const answer = rows[index][3];
+
+          document.getElementById("question-number").textContent = `第${index}問`;
+          document.getElementById("question-text").textContent = question;
+          toggleQuestion();
+          document.getElementById("answer-text").textContent = answer;
+          toggleAnswer();
+
+          updateQuestionVisibility();
+        });
+    
+
+    }
+
+    document.addEventListener("input", e => {
+      if (e.target.classList.contains("rank-input")) {
+        const card = e.target.closest(".card");
+        const val = parseInt(e.target.value);
+        card.classList.remove("rank-1", "rank-2", "rank-3");
+        if ([1, 2, 3].includes(val)) card.classList.add(`rank-${val}`);
+      }
+    });
+
+    window.onload = () => {
+      generatePlayers();
+      fetchAndDisplayQuestion();
+    
+    };
+  </script>
+</body>
+</html>
