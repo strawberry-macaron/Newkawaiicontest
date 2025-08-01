@@ -240,6 +240,7 @@
           <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
         </div>
       `;
+      applyScoreAndStatus(card, data.maru || 0, data.batsu || 0);
       container.appendChild(card);
     }
 
@@ -308,7 +309,67 @@
   // ローカルストレージに保存（例：player_0, player_1...）
       localStorage.setItem(`player_${index}`, JSON.stringify(playerData));
     }
-  
+  function applyScoreAndStatus(card, maru, batsu) {
+  const maruSpan = card.querySelector(".maru");
+  const batsuSpan = card.querySelector(".batsu");
+  const info = card.querySelector(".display-info");
+
+  maruSpan.textContent = maru;
+  batsuSpan.textContent = batsu;
+
+  if (maru >= 5) {
+    if (card.classList.contains("finished")) return;
+
+    card.classList.add("finished");
+
+    const rankTag = document.createElement("div");
+    rankTag.innerHTML = `<strong>${ordinal(currentRank)}</strong>`;
+    info.appendChild(rankTag);
+    currentRank++;
+    lockCard(card);
+  }
+
+  if (batsu >= 2) {
+    if (card.classList.contains("failed")) return;
+
+    card.classList.add("failed");
+
+    if (!card.querySelector(".disqualification-message")) {
+      const disqLabel = document.createElement("span");
+      disqLabel.className = "disqualification-message";
+      disqLabel.textContent = "失格";
+      card.appendChild(disqLabel);
+    }
+
+    const failTag = document.createElement("div");
+    failTag.innerHTML = `<span style='color:red;font-weight:bold;'>失格</span>`;
+    info.appendChild(failTag);
+
+    lockCard(card);
+  }
+}
+    function addScore(btn, type) {
+  const card = btn.closest(".card");
+  if (card.classList.contains("finished") || card.classList.contains("failed")) return;
+
+  const maruSpan = card.querySelector(".maru");
+  const batsuSpan = card.querySelector(".batsu");
+  let maru = parseInt(maruSpan.textContent);
+  let batsu = parseInt(batsuSpan.textContent);
+
+  if (type === 'maru') maru++;
+  if (type === 'batsu') batsu++;
+
+  // 保存
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+  data.maru = maru;
+  data.batsu = batsu;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+
+  // 状態反映
+  applyScoreAndStatus(card, maru, batsu);
+}
 
     function ordinal(n) {
       const s = ["th", "st", "nd", "rd"];
@@ -322,64 +383,6 @@
 
     function lockCard(card) {
       card.querySelectorAll("button").forEach(btn => btn.disabled = true);
-    }
-
-    function addScore(btn, type) {
-      const card = btn.closest(".card");
-      if (card.classList.contains("finished") || card.classList.contains("failed")) return;
-
-      const maruSpan = card.querySelector(".maru");
-      const batsuSpan = card.querySelector(".batsu");
-      let maru = parseInt(maruSpan.textContent);
-      let batsu = parseInt(batsuSpan.textContent);
-
-      if (type === 'maru') maru++;
-      if (type === 'batsu') batsu++;
-
-      maruSpan.textContent = maru;
-      batsuSpan.textContent = batsu;
-      const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
-      const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
-
-      data.maru = maru;
-  data.batsu = batsu;
-
-      localStorage.setItem(`player_${index}`, JSON.stringify(data));
-
-      const info = card.querySelector(".display-info");
-
-      if (maru >= 5) {
-        
-        
-        card.classList.add("finished");
-
-        const rank = currentRank;
-        
-        const rankTag = document.createElement("div");
-        rankTag.innerHTML = `<strong>${ordinal(currentRank)}</strong>`;
-        info.appendChild(rankTag);
-
-        
-        currentRank++;
-        lockCard(card);
-        return;
-      }
-
-      if (batsu >= 2) {
-        card.classList.add("failed");
-
-        if (!card.querySelector(".disqualification-message")) {
-          const disqLabel = document.createElement("span");
-          disqLabel.className = "disqualification-message";
-          disqLabel.textContent = "失格";
-          card.appendChild(disqLabel);
-        }
-        const failTag = document.createElement("div");
-        failTag.innerHTML = `<span style='color:red;font-weight:bold;'>失格</span>`;
-        info.appendChild(failTag);
-        lockCard(card);
-        return;
-      }
     }
 
     function resetScore(btn) {
