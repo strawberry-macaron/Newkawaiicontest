@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Ex Round 表示画面</title>
+  <title>3 Round α 表示画面</title>
   <style>
     body {
       background-color: #fdebf0;
@@ -191,7 +191,7 @@
   </style>
 </head>
 <body>
-  <h1>Ex Round 表示画面</h1>
+  <h1>3Round αコース 表示画面</h1>
 
   <div id="question-area">
     <div id="question-number">問題番号</div>
@@ -333,13 +333,6 @@
         <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
       </div>
     `;
-  
-
-    // 色・状態の反映
-    if (data.color) card.classList.add(data.color);
-    if (data.isBomb) card.classList.add("bomb");
-    if (data.finished) card.classList.add("finished");
-    if (data.failed) card.classList.add("failed");
 
     // ランク表示や失格表示
     const info = card.querySelector(".display-info");
