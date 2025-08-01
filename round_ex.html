@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>Ex Round </title>
+  <title>Ex Round 表示画面</title>
   <style>
     body {
       background-color: #fdebf0;
@@ -99,9 +99,6 @@
       cursor: pointer;
     }
 
-    .rank-1, .rank-2, .rank-3 {
-      background-color: #ffc9c9 !important;
-    }
 
     .red { background-color: #ffc9c9; border-color: #ff7f7f; }
     .blue { background-color: #cce0ff; border-color: #6699ff; }
@@ -130,7 +127,7 @@
     }
     .disqualification-message {
       position: absolute;
-      top: 10px;
+      top: 150px;
       left: -25px;
       transform: rotate(-45deg);
       font-size: 24px;
@@ -146,32 +143,55 @@
       white-space: nowrap;
       writing-mode: horizontal-tb;
     }
-    .ribbon-image {
+.rank-label {
       position: absolute;
-      top: -40px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: auto;
-      z-index: 10;
+      top: 150px;
+      left: -25px;
+      transform: rotate(-45deg);
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      background: #ffc0cb;
+      padding: 5px 40px;
+      border-radius: 5px;
+      z-index: 5;
+      text-align: center;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
       pointer-events: none;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3)); /影をつける
-     }
-    .ribbon-image {
-      transition: transform 0.3s ease;
+      white-space: nowrap;
+      writing-mode: horizontal-tb;
     }
-    .card.finished:hover .ribbon-image {
-      transform: translatex(-50%) scale(1.1) rotate(-2deg);
-    }
-    .card {
-      position: relative; /* 必須：リボンを重ねるため */
-     }
+    .rank-1 {
+  background-color: #f8a2d3;
+  color: white;
+}
 
+.rank-2 {
+  background-color: #9cecf0;
+  color: white;
+}
+
+.rank-3 {
+  background-color: #fff08a;
+  color: #333;
+}
+
+.rank-4{
+  background-color: #7fffd4
+  color : white;
+}
+
+.rank-other {
+  background-color: #7fffd4;
+  color: white;
+}
+
+  
     
   </style>
 </head>
 <body>
-  <h1>ex Round 表示画面</h1>
+  <h1>Ex Round 表示画面</h1>
 
   <div id="question-area">
     <div id="question-number">問題番号</div>
@@ -201,26 +221,18 @@
       <option value="11">11人</option>
       <option value="12">12人</option>
     </select>
-    <button onclick="generatePlayers()">決定</button>
+     <button onclick="onPlayerCountConfirmed()">決定</button>
   </div>
 
   <div class="players" id="player-container"></div>
 
   <script>
-    const ribbonImages = {
-      1: "https://i.imgur.com/PbwGpHp.png",     // ピンクの水玉（1位）
-      2: "https://i.imgur.com/9bxlL1P.png",     // 水色の水玉（2位）
-      3: "https://i.imgur.com/k0nbM4C.png",   // 黄色の水玉（3位）
-      4: "https://i.imgur.com/Ssar1p6.png",    // 緑の水玉（4位）
-      5: "https://i.imgur.com/mpx0NUe.png",   // 紫の水玉（5位）
-      default: "https://i.imgur.com/YOUR_WHITE_ID.png" // 白の水玉（6位以降）
-    };
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
 
     let showQuestion = true;
     let showAnswer = true;
     let currentRank = 1;
-
+    
     function toggleQuestion() {
       showQuestion = !showQuestion;
       updateQuestionVisibility();
@@ -236,36 +248,87 @@
       document.getElementById("answer-text").style.display = showAnswer ? "block" : "none";
     }
 
-    function generatePlayers() {
-      const count = parseInt(document.getElementById("player-count").value);
-      const container = document.getElementById("player-container");
-      container.innerHTML = "";
+    function generatePlayers(count) {
+  const container = document.getElementById("player-container");
+  container.innerHTML = "";
 
-      for (let i = 0; i < count; i++) {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <input placeholder="順位" class="rank-input">
-          <input placeholder="学校名" class="school-input">
-          <input placeholder="プレイヤー名" class="name-input">
-          <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
-          <div class="display-info"></div>
-          <div class="controls">
-            <button onclick="addScore(this, 'maru')">〇</button>
-            <button onclick="addScore(this, 'batsu')">×</button>
-            <button onclick="resetScore(this)">リセット</button>
-          </div>
-          <div class="score">〇<span class="maru">0</span> ×<span class="batsu">0</span></div>
-          <div class="color-buttons">
-            <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
-            <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
-            <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
-            <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
-          </div>
-        `;
-        container.appendChild(card);
-      }
+  // 人数が指定されていない場合 → 復元
+  if (typeof count === "undefined") {
+    const savedCount = parseInt(localStorage.getItem("playerCount")) || 0;
+
+    for (let i = 0; i < savedCount; i++) {
+      const data = JSON.parse(localStorage.getItem(`player_${i}`));
+      if (!data) continue;
+
+      const card = document.createElement("div");
+      card.className = "card show";
+      if (data.color) card.classList.add(data.color);
+
+      card.innerHTML = `
+        <div class="display-info">
+          <strong>${data.name}</strong><br>
+          ${data.school}<br>
+          ${data.rank}位
+        </div>
+        <div class="controls">
+          <button onclick="addScore(this, 'maru')">〇</button>
+          <button onclick="addScore(this, 'batsu')">×</button>
+          <button onclick="resetScore(this)">リセット</button>
+        </div>
+        <div class="score">〇<span class="maru">${data.maru || 0}</span> ×<span class="batsu">${data.batsu || 0}</span></div>
+        <div class="color-buttons">
+          <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
+          <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
+          <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
+          <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
+        </div>
+      `;
+      applyScoreAndStatus(card, data.maru || 0, data.batsu || 0);
+      container.appendChild(card);
     }
+
+    return; // 復元が終わったので終了
+  }
+
+  // 人数が指定された場合 → 新規生成
+  localStorage.setItem("playerCount", count);
+
+  for (let i = 0; i < count; i++) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const emptyPlayer = {
+      name: "",
+      school: "",
+      rank: "",
+      maru: 0,
+      batsu: 0,
+      color: ""
+    };
+    localStorage.setItem(`player_${i}`, JSON.stringify(emptyPlayer));
+
+    card.innerHTML = `
+      <input placeholder="順位" class="rank-input">
+      <input placeholder="学校名" class="school-input">
+      <input placeholder="プレイヤー名" class="name-input">
+      <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
+      <div class="display-info"></div>
+      <div class="controls">
+        <button onclick="addScore(this, 'maru')">〇</button>
+        <button onclick="addScore(this, 'batsu')">×</button>
+        <button onclick="resetScore(this)">リセット</button>
+      </div>
+      <div class="score">〇<span class="maru">0</span> ×<span class="batsu">0</span></div>
+      <div class="color-buttons">
+        <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
+        <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
+        <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
+        <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
+      </div>
+    `;
+    container.appendChild(card);
+  }
+}
 
     function confirmPlayer(btn) {
       const card = btn.closest(".card");
@@ -273,73 +336,108 @@
       const school = card.querySelector(".school-input").value;
       const name = card.querySelector(".name-input").value;
       const info = card.querySelector(".display-info");
+      // 表示切り替え
       info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
+
+      const index = Array.from(document.querySelectorAll(".card")).indexOf(card); // 何番目のカードか取得
+
+  // 保存対象データ
+       const playerData = {
+        name: name,
+        school: school,
+        rank: rank
+       };
+
+  // ローカルストレージに保存（例：player_0, player_1...）
+      localStorage.setItem(`player_${index}`, JSON.stringify(playerData));
     }
+  function applyScoreAndStatus(card, maru, batsu) {
+  const maruSpan = card.querySelector(".maru");
+  const batsuSpan = card.querySelector(".batsu");
+  const info = card.querySelector(".display-info");
+
+  maruSpan.textContent = maru;
+  batsuSpan.textContent = batsu;
+
+    function ordinal(n) {
+  if (n === 1) return "1st";
+  if (n === 2) return "2nd";
+  if (n === 3) return "3rd";
+  return `${n}th`;
+}
+
+  if (maru >= 3) {
+  if (card.classList.contains("finished")) return;
+
+  card.classList.add("finished");
+
+  const info = card.querySelector(".display-info");
+
+  // ラベルのテキストとクラスを順位に応じて設定
+  const rankText = ordinal(currentRank);
+  const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
+
+  const label = document.createElement("div");
+  label.className = `rank-label ${rankClass}`;
+  label.textContent = rankText;
+
+  info.appendChild(label); // 表示エリアに追加
+
+  currentRank++;
+  lockCard(card);
+}
+
+  if (batsu >= 1) {
+    if (card.classList.contains("failed")) return;
+
+    card.classList.add("failed");
+
+    if (!card.querySelector(".disqualification-message")) {
+      const disqLabel = document.createElement("span");
+      disqLabel.className = "disqualification-message";
+      disqLabel.textContent = "失格";
+      card.appendChild(disqLabel);
+    }
+
+    lockCard(card);
+  }
+}
+    function addScore(btn, type) {
+  const card = btn.closest(".card");
+  if (card.classList.contains("finished") || card.classList.contains("failed")) return;
+
+  const maruSpan = card.querySelector(".maru");
+  const batsuSpan = card.querySelector(".batsu");
+  let maru = parseInt(maruSpan.textContent);
+  let batsu = parseInt(batsuSpan.textContent);
+
+  if (type === 'maru') maru++;
+  if (type === 'batsu') batsu++;
+
+  // 保存
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+  data.maru = maru;
+  data.batsu = batsu;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+
+  // 状態反映
+  applyScoreAndStatus(card, maru, batsu);
+}
 
     function ordinal(n) {
       const s = ["th", "st", "nd", "rd"];
       const v = n % 100;
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     }
+    function onPlayerCountConfirmed() {
+  const count = parseInt(document.getElementById("player-count").value);
+  generatePlayers(count); // ← 人数指定して新しく生成
+}
 
     function lockCard(card) {
       card.querySelectorAll("button").forEach(btn => btn.disabled = true);
-    }
-
-    function addScore(btn, type) {
-      const card = btn.closest(".card");
-      if (card.classList.contains("finished") || card.classList.contains("failed")) return;
-
-      const maruSpan = card.querySelector(".maru");
-      const batsuSpan = card.querySelector(".batsu");
-      let maru = parseInt(maruSpan.textContent);
-      let batsu = parseInt(batsuSpan.textContent);
-
-      if (type === 'maru') maru++;
-      if (type === 'batsu') batsu++;
-
-      maruSpan.textContent = maru;
-      batsuSpan.textContent = batsu;
-
-      const info = card.querySelector(".display-info");
-
-      if (maru >= 3) {
-        if (card.querySelector(".ribbon-image")) return;
-        
-        card.classList.add("finished");
-
-        const rank = currentRank;
-        
-        const rankTag = document.createElement("div");
-        rankTag.innerHTML = `<strong>${ordinal(currentRank)}</strong>`;
-        info.appendChild(rankTag);
-
-        const ribbon = document.createElement("img");
-        ribbon.src = ribbonImages[rank] || ribbonImages["default"];
-        ribbon.className = "ribbon-image";
-        card.appendChild(ribbon);
-        
-        currentRank++;
-        lockCard(card);
-        return;
-      }
-
-      if (batsu >= 1) {
-        card.classList.add("failed");
-
-        if (!card.querySelector(".disqualification-message")) {
-          const disqLabel = document.createElement("span");
-          disqLabel.className = "disqualification-message";
-          disqLabel.textContent = "失格";
-          card.appendChild(disqLabel);
-        }
-        const failTag = document.createElement("div");
-        failTag.innerHTML = `<span style='color:red;font-weight:bold;'>失格</span>`;
-        info.appendChild(failTag);
-        lockCard(card);
-        return;
-      }
     }
 
     function resetScore(btn) {
@@ -349,10 +447,17 @@
     }
 
     function changeColor(btn, color) {
-      const card = btn.closest(".card");
-      card.classList.remove("red", "blue", "yellow", "green");
-      card.classList.add(color);
-    }
+  const card = btn.closest(".card");
+  card.classList.remove("red", "blue", "yellow", "green");
+  card.classList.add(color);
+
+  // ★ 色を保存
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+
+  data.color = color;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
     function prevQuestion() {
       let currentIndex = parseInt(localStorage.getItem("currentQuestionNumber") || "1", 10);
       currentIndex = Math.max(1, currentIndex - 1); // 1未満にはならないように
@@ -407,6 +512,7 @@
     window.onload = () => {
       generatePlayers();
       fetchAndDisplayQuestion();
+    
     };
   </script>
 </body>
