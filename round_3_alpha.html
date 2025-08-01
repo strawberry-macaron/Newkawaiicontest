@@ -607,14 +607,6 @@
 
     }
 
-    document.addEventListener("input", e => {
-      if (e.target.classList.contains("rank-input")) {
-        const card = e.target.closest(".card");
-        const val = parseInt(e.target.value);
-        card.classList.remove("rank-1", "rank-2", "rank-3");
-        if ([1, 2, 3].includes(val)) card.classList.add(`rank-${val}`);
-      }
-    });
 
     window.onload = () => {
       generatePlayers();
