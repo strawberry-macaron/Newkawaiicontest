@@ -507,6 +507,8 @@
         .then(res => res.text())
         .then(text => {
           const rows = text.trim().split("\n").map(r => r.split(","));
+          initializeQuestionSelector(rows.length - 1); // 
+
           const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 1;
           if (index >= rows.length) return;
 
