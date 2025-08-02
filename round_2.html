@@ -223,6 +223,10 @@
     </select>
      <button onclick="onPlayerCountConfirmed()">決定</button>
   </div>
+  <label for="question-selector">問題番号を選択：</label>
+<select id="question-selector">
+  <!-- JSで問題数に応じて自動追加 -->
+</select>
 
   <div class="players" id="player-container"></div>
 
@@ -247,7 +251,26 @@
       document.getElementById("question-text").style.display = showQuestion ? "block" : "none";
       document.getElementById("answer-text").style.display = showAnswer ? "block" : "none";
     }
+    function initializeQuestionSelector(totalQuestions) {
+  const selector = document.getElementById("question-selector");
+  selector.innerHTML = "";
 
+  for (let i = 1; i <= totalQuestions; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = `第${i}問`;
+    selector.appendChild(option);
+  }
+
+  const current = parseInt(localStorage.getItem("currentQuestionNumber") || "1", 10);
+  selector.value = current;
+}
+    document.getElementById("question-selector").addEventListener("change", function () {
+  const selected = parseInt(this.value, 10);
+  localStorage.setItem("currentQuestionNumber", selected);
+  location.reload(); // または fetchAndDisplayQuestion() を直接呼んでもOK
+});
+    
     function generatePlayers(count) {
   const container = document.getElementById("player-container");
   container.innerHTML = "";
