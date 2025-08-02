@@ -460,7 +460,9 @@
 }
 
     function lockCard(card) {
-      card.querySelectorAll("button").forEach(btn => btn.disabled = true);
+      card.querySelectorAll("button").forEach(btn => {
+         if (!btn.textContent.includes("リセット")) {
+            btn.disabled = true;
     }
 
     function resetScore(btn) {
