@@ -391,7 +391,8 @@
       info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
 // localStorageから復元する（なければデフォルト）
-    const data = JSON.parse(localStorage.getItem(`player_${i}`)) || {
+    const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+    const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
       name: "",
       school: "",
       rank: "",
@@ -490,7 +491,7 @@
   // ★ 色を保存
   const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
   // localStorageから復元する（なければデフォルト）
-    const data = JSON.parse(localStorage.getItem(`player_${i}`)) || {
+    const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
       name: "",
       school: "",
       rank: "",
