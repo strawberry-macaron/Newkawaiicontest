@@ -185,6 +185,11 @@
   background-color: #7fffd4;
   color: white;
 }
+.bomb-icon {
+  font-size: 16px;
+  margin-bottom: 2px;
+  color: red;
+}
 
   
     
@@ -319,6 +324,7 @@
         <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
       </div>
       <div class="score">
+        <div class="bomb-icon" style="display:none;">💣</div>
         <div>○: <span class="maru">${data.correct}</span></div>
         <div>誤答ポイント: <span class="penalty-points">${data.penalty}</span></div>
         <div class="display-info"></div>
@@ -482,7 +488,12 @@
   // 状態反映
   applyScoreAndStatus(card, maru, batsu);
 }
-
+    function setBombStatus(card, isBomb) {
+  const bombIcon = card.querySelector(".bomb-icon");
+  if (bombIcon) {
+    bombIcon.style.display = isBomb ? "block" : "none";
+  }
+}
     function ordinal(n) {
       const s = ["th", "st", "nd", "rd"];
       const v = n % 100;
@@ -504,12 +515,14 @@
     data.correct += 1;
     if (data.isBomb) {
       data.isBomb = false; // 爆弾解除
+      setBombStatus(card, false); // 爆弾解除
       card.classList.remove("bomb");
     }
   } else if (type === "wrong") {
     if (!data.isBomb) {
       data.isBomb = true;
       card.classList.add("bomb");
+      setBombStatus(card, true);  // 爆弾状態
     } else {
       data.penalty -= hasButton ? 3 : 1;
     }
