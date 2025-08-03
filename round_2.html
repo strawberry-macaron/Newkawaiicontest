@@ -467,18 +467,30 @@
   });
 }
 
-        function resetScore(btn) {
-      const card = btn.closest(".card");
-      card.querySelector(".maru").textContent = "0";
-      card.querySelector(".batsu").textContent = "0";
-    }
+    function resetScore(btn) {
+  const card = btn.closest(".card");
+  card.querySelector(".maru").textContent = "0";
+  card.querySelector(".batsu").textContent = "0";
+
+  card.querySelectorAll("button").forEach(btn => btn.disabled = false);
+
+  card.classList.remove("finished", "failed");
+  card.querySelector(".disqualification-message")?.remove();
+  card.querySelector(".rank-label")?.remove();
+
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+  data.maru = 0;
+  data.batsu = 0;
+  data.finished = false;
+  data.failed = false;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
 
     function changeColor(btn, color) {
   const card = btn.closest(".card");
   card.classList.remove("red", "blue", "yellow", "green");
   card.classList.add(color);
-
-  // ★ 色を保存
   const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
   const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
 
