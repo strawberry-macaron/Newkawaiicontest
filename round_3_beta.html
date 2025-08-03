@@ -408,22 +408,18 @@
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
   
-  
-    function ordinal(n) {
-      const s = ["th", "st", "nd", "rd"];
-      const v = n % 100;
-      return n + (s[(v - 20) % 10] || s[v] || s[0]);
-    }
     function onPlayerCountConfirmed() {
   const count = parseInt(document.getElementById("player-count").value);
   generatePlayers(count); // ← 人数指定して新しく生成
 }
-    function addUpdownScore(card, type, ) {
+   function addUpdownScore(card, type) {
   const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
   const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
     score: 0,
-    bonusscore:0,
+    bonusscore: 0,
     allowedWrong: 2,
+    finished: false,
+    failed: false
   };
 
   if (data.finished || data.failed) return;
@@ -442,24 +438,34 @@
     data.bonusscore++;
     if (data.bonusscore <= 2) data.allowedWrong++;
   }
-  
 
   // 更新表示
   card.querySelector(".maru").textContent = data.score;
   card.querySelector(".penalty-points").textContent = data.allowedWrong;
   card.querySelector(".bonusscore").textContent = data.bonusscore;
 
-  // 勝ち抜け
-  if (data.score >= 10) {
-    card.classList.add("finished");
+  // ✅ 勝ち抜け処理（10点到達）
+  if (data.score >= 10 && !data.finished) {
     data.finished = true;
+    card.classList.add("finished");
+
+    const rankText = ordinal(currentRank); // 例: 1st
+    const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
+
+    const label = document.createElement("div");
+    label.className = `rank-label ${rankClass}`;
+    label.textContent = `${rankText} WIN 🎉`;
+
+    card.querySelector(".display-info").appendChild(label);
+    currentRank++;
+
     lockCard(card);
   }
 
-  // 失格
-  if (data.allowedWrong <= 0) {
-    card.classList.add("failed");
+  // 失格処理
+  if (data.allowedWrong <= 0 && !data.failed) {
     data.failed = true;
+    card.classList.add("failed");
     lockCard(card);
     if (!card.querySelector(".disqualification-message")) {
       const disq = document.createElement("div");
@@ -471,16 +477,39 @@
 
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
-
+    let currentRank = 1;
+    function ordinal(n) {
+  if (n === 1) return "1st";
+  if (n === 2) return "2nd";
+  if (n === 3) return "3rd";
+  return `${n}th`;
+}
     function lockCard(card) {
       card.querySelectorAll("button").forEach(btn => btn.disabled = true);
     }
 
     function resetScore(btn) {
-      const card = btn.closest(".card");
-      card.querySelector(".maru").textContent = "0";
-      card.querySelector(".batsu").textContent = "0";
-    }
+  const card = btn.closest(".card");
+  card.querySelector(".maru").textContent = "0";
+  card.querySelector(".batsu").textContent = "0";
+  card.querySelector(".penalty-points").textContent = "2";
+  card.querySelector(".bonusscore").textContent = "0";
+
+  card.classList.remove("finished", "failed", "rank-1", "rank-2", "rank-3", "rank-other");
+
+  card.querySelectorAll("button").forEach(btn => btn.disabled = false);
+  card.querySelector(".disqualification-message")?.remove();
+  card.querySelector(".rank-label")?.remove();
+
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+  data.score = 0;
+  data.bonusscore = 0;
+  data.allowedWrong = 2;
+  data.finished = false;
+  data.failed = false;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
 
     function changeColor(btn, color) {
   const card = btn.closest(".card");
