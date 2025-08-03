@@ -385,30 +385,25 @@
   const card = document.getElementById(`player-${index}`);
   const name = card.querySelector(".name-input").value;
   const school = card.querySelector(".school-input").value;
-  const rank = card.querySelector(".rank-input").value;
-  const score = parseInt(card.querySelector(".maru").textContent);
-  const bonusscore = parseInt(card.querySelector(".bonusscore").textContent);
-  const allowedWrong = parseInt(card.querySelector(".penalty-points").textContent);
  const info = card.querySelector(".display-info");
       // 表示切り替え
       info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
-  const color = [...card.classList].find(c => ["red", "blue", "yellow", "green"].includes(c));
-  const finished = card.classList.contains("finished");
-  const failed = card.classList.contains("failed");
-
-  const data = {
-    name,
-    school,
-    rank,
-    score,
-    bonusscore,
-    allowedWrong,
-    color: color || "",
-    finished,
-    failed
-  };
-
+// localStorageから復元する（なければデフォルト）
+    const data = JSON.parse(localStorage.getItem(`player_${i}`)) || {
+      name: "",
+      school: "",
+      rank: "",
+      color: "",
+      score: 0,
+      bonusscore:0,
+      allowedWrong: 2,
+      finished: false,
+      failed: false
+    };
+  data.name = name;
+  data.school = school;
+  data.rank = rank;
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
   
@@ -493,7 +488,18 @@
 
   // ★ 色を保存
   const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
-  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+  // localStorageから復元する（なければデフォルト）
+    const data = JSON.parse(localStorage.getItem(`player_${i}`)) || {
+      name: "",
+      school: "",
+      rank: "",
+      color: "",
+      score: 0,
+      bonusscore:0,
+      allowedWrong: 2,
+      finished: false,
+      failed: false
+    };
 
   data.color = color;
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
