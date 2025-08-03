@@ -315,7 +315,7 @@
         <input placeholder="順位" class="rank-input" value="${data.rank || ""}">
         <input placeholder="学校名" class="school-input" value="${data.school || ""}">
         <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
-        <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
+        <button class="confirm-button" onclick="savePlayerData(${i})">決定</button>
       </div>
        <div class="display-info"></div>
       <div class="score">
@@ -386,8 +386,9 @@
   const name = card.querySelector(".name-input").value;
   const school = card.querySelector(".school-input").value;
   const rank = card.querySelector(".rank-input").value;
-  const maru = parseInt(card.querySelector(".maru").textContent);
-  const penalty = parseInt(card.querySelector(".penalty-points").textContent);
+  const score = parseInt(card.querySelector(".maru").textContent);
+  const bonusscore = parseInt(card.querySelector(".bonusscore").textContent);
+  const allowedWrong = parseInt(card.querySelector(".penalty-points").textContent);
 
   const color = [...card.classList].find(c => ["red", "blue", "yellow", "green"].includes(c));
   const finished = card.classList.contains("finished");
@@ -397,8 +398,9 @@
     name,
     school,
     rank,
-    correct: maru,
-    penalty,
+    score,
+    bonusscore,
+    allowedWrong,
     color: color || "",
     finished,
     failed
