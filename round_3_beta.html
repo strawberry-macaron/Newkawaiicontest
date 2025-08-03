@@ -456,6 +456,8 @@
     label.className = `rank-label ${rankClass}`;
     label.textContent = `${rankText} WIN 🎉`;
 
+    card.classList.add("show");
+    
     card.querySelector(".display-info").appendChild(label);
     currentRank++;
 
