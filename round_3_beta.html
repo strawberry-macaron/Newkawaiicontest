@@ -450,7 +450,7 @@
   card.querySelector(".bonusscore").textContent = data.bonusscore;
 
   // 勝ち抜け
-  if (data.correct >= 10) {
+  if (data.score >= 10) {
     card.classList.add("finished");
     data.finished = true;
     lockCard(card);
