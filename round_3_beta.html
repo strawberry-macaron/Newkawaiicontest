@@ -303,8 +303,9 @@
       school: "",
       rank: "",
       color: "",
-      correct: 0,
-      penalty: 10,
+      score: 0,
+      bonusscore:0,
+      allowedWrong: 2,
       finished: false,
       failed: false
     };
@@ -318,8 +319,9 @@
       </div>
        <div class="display-info"></div>
       <div class="score">
-        <div>○: <span class="maru">${data.correct}</span></div>
-        <div>誤答可能回数: <span class="penalty-points">${data.penalty}</span></div>
+        <div>○: <span class="maru">${data.score}</span></div>
+        <div>誤答可能回数: <span class="penalty-points">${data.allowedWrong}</span></div>
+        <div>女子問ボーナス:<span class="bonusscore">${data.bonusscore}</span></div>
         <button onclick="addUpdownScore(this.closest('.card'), 'correct')">○正解</button>
         <button onclick="addUpdownScore(this.closest('.card'), 'wrong')">×不正解</button>
       </div>
@@ -418,43 +420,45 @@
     function addUpdownScore(card, type, ) {
   const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
   const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
-    correct: 0,
-    penalty: 2,
+    score: 0,
+    bonusscore:0,
+    allowedWrong: 2,
   };
 
   if (data.finished || data.failed) return;
 
   if (type === "correct") {
-    p.score++;
+    data.score++;
   }
 
   if (type === "wrong") {
-    p.score = 0;
-    p.wrong++;
+    data.score = 0;
+    data.allowedWrong--;
   }
 
   if (type === "bonus") {
-    p.score++;
-    if (p.allowedWrong < 2) p.allowedWrong++;
+    data.score++;
+    data.bonusscore++;
+    if (data.bonusscore <= 2) data.allowedWrong++;
   }
-
-  updateDisplay(p);
-}
   
 
   // 更新表示
-  card.querySelector(".maru").textContent = data.correct;
-  card.querySelector(".penalty-points").textContent = data.penalty;
+  card.querySelector(".maru").textContent = data.score;
+  card.querySelector(".penalty-points").textContent = data.allowedWrong;
+  card.querySelector(".bonusscore").textContent = data.bonusscore;
 
   // 勝ち抜け
   if (data.correct >= 10) {
     card.classList.add("finished");
+    data.finished = true;
     lockCard(card);
   }
 
   // 失格
-  if (data.penalty <= 0) {
+  if (data.allowedWrong <= 0) {
     card.classList.add("failed");
+    data.failed = true;
     lockCard(card);
     if (!card.querySelector(".disqualification-message")) {
       const disq = document.createElement("div");
