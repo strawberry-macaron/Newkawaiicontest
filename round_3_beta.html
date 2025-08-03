@@ -386,6 +386,7 @@
   const name = card.querySelector(".name-input").value;
   const school = card.querySelector(".school-input").value;
  const info = card.querySelector(".display-info");
+      const rank = card.querySelector(".rank-input").value;
       // 表示切り替え
       info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
