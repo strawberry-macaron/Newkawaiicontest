@@ -324,11 +324,11 @@
         <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
         <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
       </div>
+       <div class="display-info"></div>
       <div class="score">
         <div class="bomb-icon" style="display:none;">💣</div>
         <div>○: <span class="maru">${data.correct}</span></div>
         <div>誤答ポイント: <span class="penalty-points">${data.penalty}</span></div>
-        <div class="display-info"></div>
         <button onclick="addBomberScore(this.closest('.card'), 'correct')">○正解</button>
         <button onclick="addBomberScore(this.closest('.card'), 'wrong', false)">×ボタンなし</button>
         <button onclick="addBomberScore(this.closest('.card'), 'wrong', true)">×ボタンあり</button>
