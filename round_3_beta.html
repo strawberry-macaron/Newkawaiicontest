@@ -391,7 +391,6 @@
       info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
 // localStorageから復元する（なければデフォルト）
-    const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
     const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
       name: "",
       school: "",
