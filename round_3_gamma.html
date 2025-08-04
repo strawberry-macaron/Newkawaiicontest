@@ -490,7 +490,7 @@
       // 他プレイヤーの連答権を切る
   document.querySelectorAll(".card").forEach((otherCard, j) => {
     if (j !== index) {
-      const otherData = JSON.parse(localStorage.getItem(player_${j}))  {};
+      const otherData = JSON.parse(localStorage.getItem(player_${j}))||{};
       otherData.isContinue = false;
       localStorage.setItem(player_${j}, JSON.stringify(otherData));
     }
