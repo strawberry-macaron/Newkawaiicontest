@@ -504,9 +504,13 @@
   if (n === 3) return "3rd";
   return `${n}th`;
 }
-    function lockCard(card) {
-      card.querySelectorAll("button").forEach(btn => btn.disabled = true);
+  function lockCard(card) {
+  card.querySelectorAll("button").forEach(btn => {
+    if (!btn.textContent.includes("リセット")) {
+      btn.disabled = true;
     }
+  });
+}
 
     function resetScore(btn) {
   const card = btn.closest(".card");
@@ -515,8 +519,7 @@
   card.querySelector(".bonusscore").textContent = "0";
 
   card.classList.remove("finished", "failed", "rank-1", "rank-2", "rank-3", "rank-other");
-
-  card.querySelectorAll("button").forEach(btn => btn.disabled = false);
+  lockCard(card)
   card.querySelector(".disqualification-message")?.remove();
   card.querySelector(".rank-label")?.remove();
 
