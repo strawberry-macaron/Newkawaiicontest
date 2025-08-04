@@ -358,6 +358,9 @@
     if ( data.color !== "") {
   card.classList.add(data.color);
 }
+  if (data.isContinue) {
+  card.querySelector(".heart-icon").classList.add("heart-active");
+}
     // ランク表示や失格表示
     const info = card.querySelector(".display-info");
 
