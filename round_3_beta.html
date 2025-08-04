@@ -357,6 +357,38 @@
     card.querySelector(".rank-input").addEventListener("input", () => savePlayerData(i));
 
     container.appendChild(card);
+      // ✅ 勝ち抜け処理（10点到達）
+  if (data.score >= 10 && !data.finished) {
+    data.finished = true;
+    card.classList.add("finished");
+
+    const rankText = ordinal(currentRank); // 例: 1st
+    const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
+
+    const label = document.createElement("div");
+    label.className = `rank-label ${rankClass}`;
+    label.textContent = `${rankText}`;
+
+    card.classList.add("show");
+    
+    card.querySelector(".display-info").appendChild(label);
+    currentRank++;
+
+    lockCard(card);
+  }
+
+  // 失格処理
+  if (data.allowedWrong <= 0 && !data.failed) {
+    data.failed = true;
+    card.classList.add("failed");
+    lockCard(card);
+    if (!card.querySelector(".disqualification-message")) {
+      const disq = document.createElement("div");
+      disq.className = "disqualification-message";
+      disq.textContent = "失格";
+      card.appendChild(disq);
+    }
+  }
     localStorage.setItem(`player_${i}`, JSON.stringify(data));
   }
 }
