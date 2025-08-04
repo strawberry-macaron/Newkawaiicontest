@@ -330,6 +330,7 @@
         <div>○: <span class="maru">${data.correct}</span></div>
         <div>誤答ポイント: <span class="penalty-points">${data.penalty}</span></div>
         <button onclick="addBomberScore(this.closest('.card'), 'correct')">○正解</button>
+        <button onclick="addBomberScore(this.closest('.card'), 'firstwrong')">×不正解</button>
         <button onclick="addBomberScore(this.closest('.card'), 'wrong', false)">×ボタンなし</button>
         <button onclick="addBomberScore(this.closest('.card'), 'wrong', true)">×ボタンあり</button>
       </div>
@@ -520,15 +521,14 @@
       card.classList.remove("bomb");
     }
   } else if (type === "wrong") {
-    if (!data.isBomb) {
-      data.isBomb = true;
-      card.classList.add("bomb");
-      setBombStatus(card, true);  // 爆弾状態
-    } else {
       data.penalty -= hasButton ? 3 : 1;
-    }
   }
-
+  if(type === "firstwrong"){
+    data.isBomb = true;
+    card.classList.add("bomb");
+      data.isBomb = true;
+      setBombStatus(card, true);  // 爆弾状態
+  }
   // 更新表示
   card.querySelector(".maru").textContent = data.correct;
   card.querySelector(".penalty-points").textContent = data.penalty;
