@@ -335,20 +335,6 @@
 
     // ランク表示や失格表示
     const info = card.querySelector(".display-info");
-    if (data.finished) {
-      const tag = document.createElement("div");
-      tag.textContent = `${ordinal(currentRank)} WIN 🎉`;
-      info.appendChild(tag);
-      currentRank++;
-      lockCard(card);
-    }
-    if (data.failed) {
-      const tag = document.createElement("div");
-      tag.className = "disqualification-message";
-      tag.textContent = "失格";
-      info.appendChild(tag);
-      lockCard(card);
-    }
 
     // 入力イベントで保存
     card.querySelector(".name-input").addEventListener("input", () => savePlayerData(i));
@@ -371,7 +357,6 @@
     card.classList.add("show");
     
     card.querySelector(".display-info").appendChild(label);
-    currentRank++;
 
     lockCard(card);
   }
