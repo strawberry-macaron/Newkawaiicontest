@@ -187,6 +187,18 @@
 }
 .batsu {
   display: none;
+.score {
+  /* 正解数（maru）のみ表示するように調整 */
+  visibility: visible;
+}
+
+.score .batsu {
+  display: none;
+}
+
+.score::after {
+  content: ''; /* ×の文字を表示しない */
+}
 }
 
   
