@@ -309,6 +309,7 @@
       name: "",
       school: "",
       rank: "",
+      roundrank: 0,
       color: "",
       correct: 0,
       penalty: 10,
@@ -365,6 +366,7 @@
     card.querySelector(".rank-input").addEventListener("input", () => savePlayerData(i));
 
     container.appendChild(card);
+    localStorage.setItem(`player_${i}`, JSON.stringify(data));
   }
 }
 
@@ -407,6 +409,7 @@
     name,
     school,
     rank,
+    roundrank,
     correct: maru,
     penalty,
     color: color || "",
@@ -533,10 +536,27 @@
   card.querySelector(".maru").textContent = data.correct;
   card.querySelector(".penalty-points").textContent = data.penalty;
 
-  // 勝ち抜け
+    
+    // ✅ 勝ち抜け処理（10点到達）
   if (data.correct >= 10) {
+    data.finished = true;
     card.classList.add("finished");
+
+    const rankText = ordinal(currentRank); // 例: 1st
+    const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
+    data.roundrank = currentRank;
+    const label = document.createElement("div");
+    label.className = `rank-label ${rankClass}`;
+    label.textContent = `${rankText}`;
+
+    card.classList.add("show");
+    
+    card.querySelector(".display-info").appendChild(label);
+    currentRank++;
+
     lockCard(card);
+  }
+
   }
 
   // 失格
