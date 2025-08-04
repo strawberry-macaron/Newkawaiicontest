@@ -357,6 +357,7 @@
     card.querySelector(".rank-input").addEventListener("input", () => savePlayerData(i));
 
     container.appendChild(card);
+    localStorage.setItem(`player_${i}`, JSON.stringify(data));
   }
 }
 
