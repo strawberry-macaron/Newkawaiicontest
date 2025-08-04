@@ -334,7 +334,9 @@
       </div>
     `;
     card.classList.remove("red", "blue", "yellow", "green");
-    card.classList.add(data.color);
+    if ( data.color !== "") {
+  card.classList.add(data.color);
+}
     // ランク表示や失格表示
     const info = card.querySelector(".display-info");
 
