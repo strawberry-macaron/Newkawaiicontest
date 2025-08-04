@@ -323,6 +323,7 @@
         <div>誤答可能回数: <span class="penalty-points">${data.allowedWrong}</span></div>
         <div>女子問ボーナス:<span class="bonusscore">${data.bonusscore}</span></div>
         <button onclick="addUpdownScore(this.closest('.card'), 'correct')">○正解</button>
+        <button onclick="addUpdownScore(this.closest('.card'), 'bonus')">○女子問ボーナス</button>
         <button onclick="addUpdownScore(this.closest('.card'), 'wrong')">×不正解</button>
         <button onclick="resetScore(this)">リセット</button> 
       </div>
