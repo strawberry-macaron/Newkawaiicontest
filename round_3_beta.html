@@ -333,7 +333,8 @@
         <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
       </div>
     `;
-
+    card.classList.remove("red", "blue", "yellow", "green");
+    card.classList.add(color);
     // ランク表示や失格表示
     const info = card.querySelector(".display-info");
 
