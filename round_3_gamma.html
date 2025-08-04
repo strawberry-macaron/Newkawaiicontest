@@ -324,7 +324,7 @@
         <input placeholder="順位" class="rank-input" value="${data.rank || ""}">
         <input placeholder="学校名" class="school-input" value="${data.school || ""}">
         <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
-        <button class="confirm-button" onclick="savePlayerData(${i})">決定</button>
+        <button class="confirm-button" onclick="confirmPlayerData(${i})">決定</button>
       </div>
        <div class="display-info"></div>
       <div class="score">
@@ -414,14 +414,13 @@
   // ローカルストレージに保存（例：player_0, player_1...）
       localStorage.setItem(`player_${index}`, JSON.stringify(playerData));
     }
-    function savePlayerData(index) {
+    function confirmPlayerData(index) {
   const card = document.getElementById(`player-${index}`);
   const name = card.querySelector(".name-input").value;
   const school = card.querySelector(".school-input").value;
  const info = card.querySelector(".display-info");
-      const rank = card.querySelector(".rank-input").value;
-      // 表示切り替え
-      info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
+  const rank = card.querySelector(".rank-input").value;
+ info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
       card.classList.add("show");
 // localStorageから復元する（なければデフォルト）
     const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
@@ -440,7 +439,30 @@
   data.rank = rank;
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
-  
+   function savePlayerData(index) {
+  const card = document.getElementById(`player-${index}`);
+  const name = card.querySelector(".name-input").value;
+  const school = card.querySelector(".school-input").value;
+ const info = card.querySelector(".display-info");
+  const rank = card.querySelector(".rank-input").value;
+
+// localStorageから復元する（なければデフォルト）
+    const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
+      name: "",
+      school: "",
+      rank: "",
+      color: "",
+      score: 0,
+      bonusscore:0,
+      allowedWrong: 2,
+      finished: false,
+      failed: false
+    };
+  data.name = name;
+  data.school = school;
+  data.rank = rank;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
     function onPlayerCountConfirmed() {
   const count = parseInt(document.getElementById("player-count").value);
   generatePlayers(count); // ← 人数指定して新しく生成
