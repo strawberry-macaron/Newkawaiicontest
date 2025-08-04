@@ -347,7 +347,7 @@
     data.finished = true;
     card.classList.add("finished");
 
-    const rankText = ordinal(currentRank); // 例: 1st
+    const rankText = ordinal(data.rank); // 例: 1st
     const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
 
     const label = document.createElement("div");
