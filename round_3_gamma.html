@@ -191,6 +191,15 @@
   font-size: 14px;
   margin-bottom: 8px;
 }
+.heart-icon {
+  font-size: 16px;
+  margin-bottom: 2px;
+  color: hotpink;
+  display: none;
+}
+.heart-active {
+  display: block !important;
+}
   </style>
 
 </head>
@@ -328,6 +337,7 @@
       </div>
        <div class="display-info"></div>
       <div class="score">
+       <div class="heart-icon">💖</div>
       <div class="xyz-points">
         <div><span class="maru">${data.xPoint}</span></div>
         <div><span class="penalty-points">${data.yPoint}</span></div>
@@ -487,6 +497,14 @@
     }
     data.xPoint += 1;
     data.isContinue = true;
+    document.querySelectorAll(".card").forEach((card, i) => {
+    const heart = card.querySelector(".heart-icon");
+    if (i === index) {
+      heart?.classList.add("heart-active");
+    } else {
+      heart?.classList.remove("heart-active");
+    }
+  });
  // 他プレイヤーの連答権を切る
     document.querySelectorAll(".card").forEach((otherCard, j) => {
     if (j !== index) {
@@ -500,6 +518,9 @@
   if (type === "wrong") {
      data.yPoint -= 1;
      data.isContinue = false;
+    // ハート非表示
+  card.querySelector(".heart-icon")?.classList.remove("heart-active");
+}
   }
 
  // 勝ち抜け判定：x * y * z > 48
