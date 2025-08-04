@@ -519,7 +519,7 @@
   card.querySelector(".bonusscore").textContent = "0";
 
   card.classList.remove("finished", "failed", "rank-1", "rank-2", "rank-3", "rank-other");
-  lockCard(card)
+  card.querySelectorAll("button").forEach(btn => btn.disabled = false);
   card.querySelector(".disqualification-message")?.remove();
   card.querySelector(".rank-label")?.remove();
 
