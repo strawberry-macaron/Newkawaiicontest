@@ -378,24 +378,28 @@
   function applyScoreAndStatus(card, maru, batsu) {
   const maruSpan = card.querySelector(".maru");
   const batsuSpan = card.querySelector(".batsu");
+  const info = card.querySelector(".display-info"); // ← 先に定義！
 
   maruSpan.textContent = maru;
   batsuSpan.textContent = batsu;
 
-
   if (maru >= 5) {
-  if (card.classList.contains("finished")) return;
+    if (card.classList.contains("finished")) return;
 
-  card.classList.add("finished");
-  const winLabel = document.createElement("div");
-    winLabel.className = "rank-label rank-1"; // ピンクラベルでWIN!!
+    card.classList.add("finished");
+
+    const winLabel = document.createElement("div");
+    winLabel.className = "rank-label rank-1";
     winLabel.textContent = "WIN!! 🎉";
     info.appendChild(winLabel);
 
-  const info = card.querySelector(".display-info");
+    lockCard(card);
 
-
-  lockCard(card);
+    // 他のプレイヤーのボタンを無効化（勝者以外をロック）
+    document.querySelectorAll(".card").forEach(other => {
+      if (other !== card) lockCard(other);
+    });
+  }
 }
     function addScore(btn, type) {
   const card = btn.closest(".card");
