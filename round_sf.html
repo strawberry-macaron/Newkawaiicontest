@@ -187,18 +187,6 @@
 }
 .batsu {
   display: none;
-.score {
-  /* 正解数（maru）のみ表示するように調整 */
-  visibility: visible;
-}
-
-.score .batsu {
-  display: none;
-}
-
-.score::after {
-  content: ''; /* ×の文字を表示しない */
-}
 }
 
   
@@ -314,6 +302,7 @@
           <button onclick="resetScore(this)">リセット</button>
         </div>
         <div class="score">〇<span class="maru">${data.maru || 0}</span></div>
+        <span class="batsu" style="display:none;">0</span>
         <div class="color-buttons">
           <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
           <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
