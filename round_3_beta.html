@@ -10,7 +10,6 @@
       text-align: center;
       padding: 20px;
     }
-
     h1 {
       color: #b56fdc;
       font-size: 2em;
@@ -358,7 +357,7 @@
 
     container.appendChild(card);
       // ✅ 勝ち抜け処理（10点到達）
-  if (data.score >= 10 && !data.finished) {
+  if (data.score >= 10) {
     data.finished = true;
     card.classList.add("finished");
 
@@ -378,7 +377,7 @@
   }
 
   // 失格処理
-  if (data.allowedWrong <= 0 && !data.failed) {
+  if (data.allowedWrong <= 0) {
     data.failed = true;
     card.classList.add("failed");
     lockCard(card);
