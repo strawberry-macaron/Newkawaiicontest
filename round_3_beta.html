@@ -314,7 +314,7 @@
         <input placeholder="順位" class="rank-input" value="${data.rank || ""}">
         <input placeholder="学校名" class="school-input" value="${data.school || ""}">
         <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
-        <button class="confirm-button" onclick="savePlayerData(${i})">決定</button>
+        <button class="confirm-button" onclick="confirmPlayer(this)">決定</button>
       </div>
        <div class="display-info"></div>
       <div class="score">
@@ -409,9 +409,6 @@
   const school = card.querySelector(".school-input").value;
  const info = card.querySelector(".display-info");
       const rank = card.querySelector(".rank-input").value;
-      // 表示切り替え
-      info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
-      card.classList.add("show");
 // localStorageから復元する（なければデフォルト）
     const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
       name: "",
