@@ -406,11 +406,21 @@
       const index = Array.from(document.querySelectorAll(".card")).indexOf(card); // 何番目のカードか取得
 
   // 保存対象データ
-       const playerData = {
-        name: name,
-        school: school,
-        rank: rank
-       };
+        const data = JSON.parse(localStorage.getItem(`player_${i}`)) || {
+      name: "",
+      school: "",
+      rank: "",
+      roundrank: 0,
+      color: "",
+      correct: 0,
+      penalty: 10,
+      isBomb: false,
+      finished: false,
+      failed: false
+    };
+      data.name = name;
+      data.school = school;
+      data.rank = rank;
 
   // ローカルストレージに保存（例：player_0, player_1...）
       localStorage.setItem(`player_${index}`, JSON.stringify(playerData));
@@ -493,28 +503,6 @@
 
     lockCard(card);
   }
-}
-    function addScore(btn, type) {
-  const card = btn.closest(".card");
-  if (card.classList.contains("finished") || card.classList.contains("failed")) return;
-
-  const maruSpan = card.querySelector(".maru");
-  const batsuSpan = card.querySelector(".batsu");
-  let maru = parseInt(maruSpan.textContent);
-  let batsu = parseInt(batsuSpan.textContent);
-
-  if (type === 'maru') maru++;
-  if (type === 'batsu') batsu++;
-
-  // 保存
-  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
-  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
-  data.maru = maru;
-  data.batsu = batsu;
-  localStorage.setItem(`player_${index}`, JSON.stringify(data));
-
-  // 状態反映
-  applyScoreAndStatus(card, maru, batsu);
 }
     function setBombStatus(card, isBomb) {
   const bombIcon = card.querySelector(".bomb-icon");
@@ -618,6 +606,7 @@
   const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
   data.penalty = 10;
   data.correct = 0;
+  data.roundrank = 0;
   data.isBomb = false;
   data.finished = false;
   data.failed = false;
