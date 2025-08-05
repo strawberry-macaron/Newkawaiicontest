@@ -316,6 +316,7 @@
       finished: false,
       failed: false
     };
+    currentRank = Math.max(currentRank, data.roundrank);
 
     card.innerHTML = `
       <div class="info">
