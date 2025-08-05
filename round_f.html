@@ -331,63 +331,63 @@
     };
    currentRank = Math.max(currentRank, data.roundrank + 1);
 
-    card.innerHTML = `
-      <div class="info">
-        <input placeholder="順位" class="rank-input" value="${data.rank || ""}">
-        <input placeholder="学校名" class="school-input" value="${data.school || ""}">
-        <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
-         <div>
-  
-    <select id="select-question1">
-      <option value="ファッション用語">ファッション用語</option>
-      <option value="キャラクター">キャラクター</option>
-      <option value="ロリータ用語">ロリータ用語</option>
-      <option value="ファッションブランド">ファッションブランド</option>
-      <option value="コスメ・化粧品">コスメ・化粧品</option>
-      <option value="少女文学">少女文学</option>
-      <option value="アイドル・音楽">アイドル・音楽</option>
-      <option value="スイーツ">スイーツ</option>
-      <option value="原宿文化">原宿文化</option>
-      <option value="アクセサリー・香水">アクセサリー・香水</option>
-      <option value="少女漫画">少女漫画</option>
-      <option value="その他かわいいもの">その他かわいいもの</option>
-    </select>
-    <select id="select-question2">
-      <option value="文学">文学</option>
-      <option value="科学">科学</option>
-      <option value="地理・公民">地理・公民</option>
-      <option value="生活">生活</option>
-      <option value="歴史">歴史</option>
-      <option value="言葉">言葉</option>
-      <option value="芸術・芸能">芸術・芸能</option>
-      <option value="スポーツ">スポーツ</option>
-      <option value="アニゲ">アニゲ</option>
-      <option value="ノンジャンル">ノンジャンル</option>
-    </select>
+// ヘルパー関数を作成して、selected属性を動的に設定
+const getSelected = (value, optionValue) => (value === optionValue ? 'selected' : '');
+
+card.innerHTML = `
+  <div class="info">
+    <input placeholder="順位" class="rank-input" value="${data.rank || ""}">
+    <input placeholder="学校名" class="school-input" value="${data.school || ""}">
+    <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
+      <div>
+        <select id="select-question1">
+          <option value="ファッション用語" ${getSelected(data.selectQuestion1, 'ファッション用語')}>ファッション用語</option>
+          <option value="キャラクター" ${getSelected(data.selectQuestion1, 'キャラクター')}>キャラクター</option>
+          <option value="ロリータ用語" ${getSelected(data.selectQuestion1, 'ロリータ用語')}>ロリータ用語</option>
+          <option value="ファッションブランド" ${getSelected(data.selectQuestion1, 'ファッションブランド')}>ファッションブランド</option>
+          <option value="コスメ・化粧品" ${getSelected(data.selectQuestion1, 'コスメ・化粧品')}>コスメ・化粧品</option>
+          <option value="少女文学" ${getSelected(data.selectQuestion1, '少女文学')}>少女文学</option>
+          <option value="アイドル・音楽" ${getSelected(data.selectQuestion1, 'アイドル・音楽')}>アイドル・音楽</option>
+          <option value="スイーツ" ${getSelected(data.selectQuestion1, 'スイーツ')}>スイーツ</option>
+          <option value="原宿文化" ${getSelected(data.selectQuestion1, '原宿文化')}>原宿文化</option>
+          <option value="アクセサリー・香水" ${getSelected(data.selectQuestion1, 'アクセサリー・香水')}>アクセサリー・香水</option>
+          <option value="少女漫画" ${getSelected(data.selectQuestion1, '少女漫画')}>少女漫画</option>
+          <option value="その他かわいいもの" ${getSelected(data.selectQuestion1, 'その他かわいいもの')}>その他かわいいもの</option>
+        </select>
+        <select id="select-question2">
+          <option value="文学" ${getSelected(data.selectQuestion2, '文学')}>文学</option>
+          <option value="科学" ${getSelected(data.selectQuestion2, '科学')}>科学</option>
+          <option value="地理・公民" ${getSelected(data.selectQuestion2, '地理・公民')}>地理・公民</option>
+          <option value="生活" ${getSelected(data.selectQuestion2, '生活')}>生活</option>
+          <option value="歴史" ${getSelected(data.selectQuestion2, '歴史')}>歴史</option>
+          <option value="言葉" ${getSelected(data.selectQuestion2, '言葉')}>言葉</option>
+          <option value="芸術・芸能" ${getSelected(data.selectQuestion2, '芸術・芸能')}>芸術・芸能</option>
+          <option value="スポーツ" ${getSelected(data.selectQuestion2, 'スポーツ')}>スポーツ</option>
+          <option value="アニゲ" ${getSelected(data.selectQuestion2, 'アニゲ')}>アニゲ</option>
+          <option value="ノンジャンル" ${getSelected(data.selectQuestion2, 'ノンジャンル')}>ノンジャンル</option>
+        </select>
+      </div>
+    <button class="confirm-button" onclick="confirmPlayerData(${i})">決定</button>
   </div>
-        <button class="confirm-button" onclick="confirmPlayerData(${i})">決定</button>
-      </div>
-       <div class="display-info"></div>
-      <div class="score">
-       <div class="heart-icon">💖</div>
-      <div class="xyz-points">
-        <div><span class="maru">${data.xPoint}</span></div>
-        <div><span class="penalty-points">${data.yPoint}</span></div>
-        <div><span class="bonusscore">${data.zPoint}</span></div>
-        </div>
-        <button onclick="addUpdownScore(this.closest('.card'), 'correct')">○正解</button>
-        <button onclick="addUpdownScore(this.closest('.card'), 'wrong')">×不正解</button>
-        <button onclick="resetScore(this)">リセット</button> 
-      </div>
-      <div class="color-buttons">
-        <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
-        <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
-        <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
-        <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
-      </div>
-    `;
-  document.getElementById("select-question1").value = data.selectQuestion1 || "";
-document.getElementById("select-question2").value = data.selectQuestion2 || "";
+    <div class="display-info"></div>
+  <div class="score">
+    <div class="heart-icon">💖</div>
+  <div class="xyz-points">
+    <div><span class="maru">${data.xPoint}</span></div>
+    <div><span class="penalty-points">${data.yPoint}</span></div>
+    <div><span class="bonusscore">${data.zPoint}</span></div>
+    </div>
+    <button onclick="addUpdownScore(this.closest('.card'), 'correct')">○正解</button>
+    <button onclick="addUpdownScore(this.closest('.card'), 'wrong')">×不正解</button>
+    <button onclick="resetScore(this)">リセット</button>
+  </div>
+  <div class="color-buttons">
+    <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
+    <button class="color-button" onclick="changeColor(this, 'blue')">青</button>
+    <button class="color-button" onclick="changeColor(this, 'yellow')">黄</button>
+    <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
+  </div>
+`;
     if ( data.color !== "") {
   card.classList.add(data.color);
 }
