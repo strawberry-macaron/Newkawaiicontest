@@ -352,7 +352,7 @@
     // ランク表示や失格表示
     const info = card.querySelector(".display-info");
      // ✅ 勝ち抜け処理（10点到達）
-  if (data.score >= 10) {
+  if (data.correct >= 10) {
     data.finished = true;
     card.classList.add("finished");
 
