@@ -386,9 +386,8 @@
         <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
       </div>
     `;
-    document.getElementById("select-question1").value = data.selectQuestion1
-document.getElementById("select-question2").value = data.selectQuestion2;
-    card.classList.remove("red", "blue", "yellow", "green");
+  document.getElementById("select-question1").value = data.selectQuestion1 || "";
+document.getElementById("select-question2").value = data.selectQuestion2 || "";
     if ( data.color !== "") {
   card.classList.add(data.color);
 }
