@@ -371,8 +371,8 @@
     card.querySelector(".rank-input").addEventListener("input", () => savePlayerData(i));
 
     container.appendChild(card);
-      // ✅ 勝ち抜け処理（10点到達）
-  if (data.score >= 10) {
+      // ✅ 勝ち抜け処理（48点）
+  if (data.xPoint * data.yPoint * data.zPoint >= 48) {
     data.finished = true;
     card.classList.add("finished");
 
@@ -391,7 +391,7 @@
   }
 
   // 失格処理
-  if (data.allowedWrong <= 0) {
+  if (data.yPoint <= 0) {
     data.failed = true;
     card.classList.add("failed");
     lockCard(card);
