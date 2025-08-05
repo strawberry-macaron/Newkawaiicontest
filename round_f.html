@@ -512,8 +512,10 @@ const selectQuestion2 = card.querySelector(".select-question2").value
     //正解したときの処理
     document.querySelectorAll(".card").forEach((otherCard, j) => {
     if (j !== index) {
+      const otherCard = document.getElementById(`player-${j}`);
       const otherData = JSON.parse(localStorage.getItem(`player_${j}`)) || {};
       otherData.score--;
+      otherCard.querySelector(".maru").textContent = `${otherData.score}`;
       localStorage.setItem(`player_${j}`, JSON.stringify(otherData));
     }
   });
@@ -567,7 +569,7 @@ const selectQuestion2 = card.querySelector(".select-question2").value
   }
   }
   // 表示更新
-  card.querySelector(".maru").textContent = `x:${data.score}`;
+  card.querySelector(".maru").textContent = `${data.score}`;
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
     function ordinal(n) {
