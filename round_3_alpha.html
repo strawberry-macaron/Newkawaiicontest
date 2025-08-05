@@ -83,13 +83,12 @@
       margin-top: 10px;
     }
 
-    .color-buttons {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px;
-      margin-top: 10px;
-    }
+    .color-buttons{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-top: 5px;
+}
 
     .color-button {
       padding: 4px 8px;
@@ -334,6 +333,7 @@
         <button onclick="addBomberScore(this.closest('.card'), 'firstwrong')">×不正解</button>
         <button onclick="addBomberScore(this.closest('.card'), 'wrong', false)">×ボタンなし</button>
         <button onclick="addBomberScore(this.closest('.card'), 'wrong', true)">×ボタンあり</button>
+        <button onclick="resetScore(this)">リセット</button> 
       </div>
       <div class="color-buttons">
         <button class="color-button" onclick="changeColor(this, 'red')">赤</button>
@@ -572,15 +572,33 @@
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
 
-    function lockCard(card) {
-      card.querySelectorAll("button").forEach(btn => btn.disabled = true);
+     function lockCard(card) {
+  card.querySelectorAll("button").forEach(btn => {
+    if (!btn.textContent.includes("リセット")) {
+      btn.disabled = true;
     }
+  });
+}
 
-    function resetScore(btn) {
-      const card = btn.closest(".card");
-      card.querySelector(".maru").textContent = "0";
-      card.querySelector(".batsu").textContent = "0";
-    }
+     function resetScore(btn) {
+  const card = btn.closest(".card");
+  card.querySelector(".maru").textContent = "0";
+  card.querySelector(".penalty-points").textContent = "10";
+
+  card.classList.remove("finished", "failed", "rank-1", "rank-2", "rank-3", "rank-other");
+  card.querySelectorAll("button").forEach(btn => btn.disabled = false);
+  card.querySelector(".disqualification-message")?.remove();
+  card.querySelector(".rank-label")?.remove();
+
+  const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
+  const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
+  data.penalty = 10;
+  data.correct = 0;
+  data.isBomb = false;
+  data.finished = false;
+  data.failed = false;
+  localStorage.setItem(`player_${index}`, JSON.stringify(data));
+}
 
     function changeColor(btn, color) {
   const card = btn.closest(".card");
