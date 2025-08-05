@@ -340,7 +340,7 @@ card.innerHTML = `
     <input placeholder="学校名" class="school-input" value="${data.school || ""}">
     <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
       <div>
-        <select id="select-question1">
+        <select class="select-question1">
           <option value="ファッション用語" ${getSelected(data.selectQuestion1, 'ファッション用語')}>ファッション用語</option>
           <option value="キャラクター" ${getSelected(data.selectQuestion1, 'キャラクター')}>キャラクター</option>
           <option value="ロリータ用語" ${getSelected(data.selectQuestion1, 'ロリータ用語')}>ロリータ用語</option>
@@ -354,7 +354,7 @@ card.innerHTML = `
           <option value="少女漫画" ${getSelected(data.selectQuestion1, '少女漫画')}>少女漫画</option>
           <option value="その他かわいいもの" ${getSelected(data.selectQuestion1, 'その他かわいいもの')}>その他かわいいもの</option>
         </select>
-        <select id="select-question2">
+        <select class="select-question2">
           <option value="文学" ${getSelected(data.selectQuestion2, '文学')}>文学</option>
           <option value="科学" ${getSelected(data.selectQuestion2, '科学')}>科学</option>
           <option value="地理・公民" ${getSelected(data.selectQuestion2, '地理・公民')}>地理・公民</option>
@@ -443,8 +443,8 @@ card.innerHTML = `
   const school = card.querySelector(".school-input").value;
  const info = card.querySelector(".display-info");
   const rank = card.querySelector(".rank-input").value;
-  const selectQuestion1 = document.getElementById("select-question1").value;
-const selectQuestion2 = document.getElementById("select-question2").value
+  const selectQuestion1 = card.querySelector("select-question1").value;
+const selectQuestion2 = card.querySelector("select-question2").value
  info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div><div>${selectQuestion1}</div><div>${selectQuestion2}</div>`;
       card.classList.add("show");
 // localStorageから復元する（なければデフォルト）
