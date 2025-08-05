@@ -321,11 +321,7 @@
       roundrank: 0,
       rank: "",
       color: "",
-      score: 0,
-      xPoint:0,
-      yPoint:6,
-      zPoint:1,
-      isContinue: false,
+      score: 30,
       finished: false,
       failed: false
     };
@@ -371,13 +367,11 @@ card.innerHTML = `
   </div>
     <div class="display-info"></div>
   <div class="score">
-    <div class="heart-icon">💖</div>
   <div class="xyz-points">
-    <div><span class="maru">${data.xPoint}</span></div>
-    <div><span class="penalty-points">${data.yPoint}</span></div>
-    <div><span class="bonusscore">${data.zPoint}</span></div>
+    <div><span class="maru">${data.score}</span></div>
     </div>
     <button onclick="addUpdownScore(this.closest('.card'), 'correct')">○正解</button>
+    <button onclick="addUpdownScore(this.closest('.card'), 'correctSelected')">○責問正解</button>
     <button onclick="addUpdownScore(this.closest('.card'), 'wrong')">×不正解</button>
     <button onclick="resetScore(this)">リセット</button>
   </div>
@@ -497,10 +491,7 @@ const selectQuestion2 = card.querySelector(".select-question2").value
    function addUpdownScore(card, type) {
   const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
   const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
-    xPoint: 0,
-　　yPoint: 6,
-　　zPoint: 1,
-    isContinue: false,
+    score:30,
     finished: false,
     failed: false
   };
@@ -508,44 +499,30 @@ const selectQuestion2 = card.querySelector(".select-question2").value
   if (data.finished || data.failed) return;
 
   if (type === "correct") {
-    // 連答判定
-    if (data.isContinue) {
-      data.zPoint += 0.5;
-    }
-    data.xPoint += 1;
-    data.isContinue = true;
-    document.querySelectorAll(".card").forEach((card, i) => {
-    const heart = card.querySelector(".heart-icon");
-    if (i === index) {
-      heart?.classList.add("heart-active");
-    } else {
-      heart?.classList.remove("heart-active");
-    }
-  });
- // 他プレイヤーの連答権を切る
+    //正解したときの処理
     document.querySelectorAll(".card").forEach((otherCard, j) => {
     if (j !== index) {
       const otherData = JSON.parse(localStorage.getItem(`player_${j}`)) || {};
-      otherData.isContinue = false;
+      otherData.score--;
       localStorage.setItem(`player_${j}`, JSON.stringify(otherData));
     }
   });
   }
-
+//不正解の時
   if (type === "wrong") {
-     data.yPoint -= 1;
-     data.isContinue = false;
-    // ハート非表示
-  card.querySelector(".heart-icon")?.classList.remove("heart-active");
+     data.score -= 2;
 }
+//責問正解
+  if (type ==="correctSelected"){
+    data.score += 1;
+  }
 
- // 勝ち抜け判定：x * y * z > 48
-  const product = data.xPoint * data.yPoint * data.zPoint;
-  if (product >= 48 && !data.finished) {
+ // 敗北判定：score <= 0
+  if (data.score <= 0  && !data.finished) {
     data.finished = true;
     card.classList.add("finished");
-    const rankText = ordinal(currentRank);
-    const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
+    const rankText = ordinal(4 - currentRank);
+    const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][4 - currentRank - 1] || "rank-other";
     data.roundrank = currentRank;
 
     const label = document.createElement("div");
@@ -556,19 +533,28 @@ const selectQuestion2 = card.querySelector(".select-question2").value
     card.querySelector(".display-info").appendChild(label);
     lockCard(card);
     currentRank++;
-  }
+    if (curentRank === 3){
+        document.querySelectorAll(".card").forEach((winnerData, j) => {
+    if (winnerData.roundrank === 0) {
+      const winnerCard = document.getElementById(`player-${j}`);
+      const winnerData = JSON.parse(localStorage.getItem(`player_${j}`)) || {};
+      winnerData.finished = true;
+      winnerCard.classList.add("finished");
 
-  // 失格判定
-  if (data.yPoint <= 0 && !data.failed) {
-    data.failed = true;
-    card.classList.add("failed");
-    lockCard(card);
-    if (!card.querySelector(".disqualification-message")) {
-      const disq = document.createElement("div");
-      disq.className = "disqualification-message";
-      disq.textContent = "失格";
-      card.appendChild(disq);
+      const rankText = ordinal(currentRank);
+      const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][currentRank - 1] || "rank-other";
+      winnerData.roundrank = currentRank;
+    
+      const label = document.createElement("div");
+      label.className = `rank-label ${rankClass}`;
+      label.textContent = `${rankText}`;
+
+      winnerCard.classList.add("show");
+      winnerCard.querySelector(".display-info").appendChild(label);
+      localStorage.setItem(`player_${j}`, JSON.stringify(winnerData));
     }
+  });
+  }
   }
   // 表示更新
   card.querySelector(".maru").textContent = `x:${data.xPoint}`;
