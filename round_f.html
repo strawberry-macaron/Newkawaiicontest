@@ -567,9 +567,7 @@ const selectQuestion2 = card.querySelector(".select-question2").value
   }
   }
   // 表示更新
-  card.querySelector(".maru").textContent = `x:${data.xPoint}`;
-  card.querySelector(".penalty-points").textContent = `y:${data.yPoint}`;
-  card.querySelector(".bonusscore").textContent = `z:${data.zPoint.toFixed(1)}`;
+  card.querySelector(".maru").textContent = `x:${data.score}`;
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
     function ordinal(n) {
