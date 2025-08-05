@@ -337,7 +337,7 @@
         <input placeholder="学校名" class="school-input" value="${data.school || ""}">
         <input placeholder="プレイヤー名" class="name-input" value="${data.name || ""}">
          <div>
-    責問を選んでください：
+  
     <select id="select-question1">
       <option value="ファッション用語">ファッション用語</option>
       <option value="キャラクター">キャラクター</option>
@@ -386,6 +386,8 @@
         <button class="color-button" onclick="changeColor(this, 'green')">緑</button>
       </div>
     `;
+    document.getElementById("select-question1").value = data.selectQuestion1
+document.getElementById("select-question2").value = data.selectQuestion2;
     card.classList.remove("red", "blue", "yellow", "green");
     if ( data.color !== "") {
   card.classList.add(data.color);
