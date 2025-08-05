@@ -351,20 +351,37 @@
 }
     // ランク表示や失格表示
     const info = card.querySelector(".display-info");
-    if (data.finished) {
-      const tag = document.createElement("div");
-      tag.textContent = `${ordinal(currentRank)} WIN 🎉`;
-      info.appendChild(tag);
-      currentRank++;
-      lockCard(card);
+     // ✅ 勝ち抜け処理（10点到達）
+  if (data.score >= 10) {
+    data.finished = true;
+    card.classList.add("finished");
+
+    const rankText = ordinal(data.roundrank); // 例: 1st
+    const rankClass = ["rank-1", "rank-2", "rank-3", "rank-4"][data.roundrank - 1] || "rank-other";
+
+    const label = document.createElement("div");
+    label.className = `rank-label ${rankClass}`;
+    label.textContent = `${rankText}`;
+
+    card.classList.add("show");
+    
+    card.querySelector(".display-info").appendChild(label);
+
+    lockCard(card);
+  }
+
+  // 失格処理
+  if (data.penalty <= 0) {
+    data.failed = true;
+    card.classList.add("failed");
+    lockCard(card);
+    if (!card.querySelector(".disqualification-message")) {
+      const disq = document.createElement("div");
+      disq.className = "disqualification-message";
+      disq.textContent = "失格";
+      card.appendChild(disq);
     }
-    if (data.failed) {
-      const tag = document.createElement("div");
-      tag.className = "disqualification-message";
-      tag.textContent = "失格";
-      info.appendChild(tag);
-      lockCard(card);
-    }
+  }
 
     // 入力イベントで保存
     card.querySelector(".name-input").addEventListener("input", () => savePlayerData(i));
