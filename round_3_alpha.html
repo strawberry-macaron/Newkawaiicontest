@@ -406,7 +406,7 @@
       const index = Array.from(document.querySelectorAll(".card")).indexOf(card); // 何番目のカードか取得
 
   // 保存対象データ
-        const data = JSON.parse(localStorage.getItem(`player_${i}`)) || {
+        const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
       name: "",
       school: "",
       rank: "",
@@ -438,18 +438,21 @@
   const finished = card.classList.contains("finished");
   const failed = card.classList.contains("failed");
 
-  const data = {
-    name,
-    school,
-    rank,
-    roundrank,
-    correct: maru,
-    penalty,
-    color: color || "",
-    isBomb,
-    finished,
-    failed
-  };
+   const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
+      name: "",
+      school: "",
+      rank: "",
+      roundrank: 0,
+      color: "",
+      correct: 0,
+      penalty: 10,
+      isBomb: false,
+      finished: false,
+      failed: false
+    };
+      data.name = name;
+      data.school = school;
+      data.rank = rank;
 
   localStorage.setItem(`player_${index}`, JSON.stringify(data));
 }
