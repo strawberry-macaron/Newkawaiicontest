@@ -589,6 +589,7 @@
   card.querySelectorAll("button").forEach(btn => btn.disabled = false);
   card.querySelector(".disqualification-message")?.remove();
   card.querySelector(".rank-label")?.remove();
+  card.querySelector(".bomb-icon").style.display ="none"
 
   const index = Array.from(document.querySelectorAll(".card")).indexOf(card);
   const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {};
