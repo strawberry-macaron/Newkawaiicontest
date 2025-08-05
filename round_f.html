@@ -443,8 +443,8 @@ card.innerHTML = `
   const school = card.querySelector(".school-input").value;
  const info = card.querySelector(".display-info");
   const rank = card.querySelector(".rank-input").value;
-  const selectQuestion1 = card.querySelector("select-question1").value;
-const selectQuestion2 = card.querySelector("select-question2").value
+  const selectQuestion1 = card.querySelector(".select-question1").value;
+const selectQuestion2 = card.querySelector(".select-question2").value
  info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div><div>${selectQuestion1}</div><div>${selectQuestion2}</div>`;
       card.classList.add("show");
 // localStorageから復元する（なければデフォルト）
