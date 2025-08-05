@@ -104,9 +104,11 @@
     .green { background-color: #c8facc; border-color: #6edc87; }
 
     .card.show input,
+    .card.show select,
     .card.show .confirm-button {
       display: none;
     }
+    
 
     .card .display-info {
       display: none;
@@ -337,30 +339,30 @@
          <div>
     責問を選んでください：
     <select id="select-question1">
-      <option value="1">ファッション用語/option>
-      <option value="2">キャラクター</option>
-      <option value="3">ロリータ用語</option>
-      <option value="4">ファッションブランド</option>
-      <option value="5">コスメ・化粧品</option>
-      <option value="6">少女文学</option>
-      <option value="7">アイドル・音楽</option>
-      <option value="8">スイーツ</option>
-      <option value="9">原宿文化</option>
-      <option value="10">アクセサリー・香水</option>
-      <option value="11">少女漫画</option>
-      <option value="12">その他かわいいもの</option>
+      <option value="ファッション用語">ファッション用語</option>
+      <option value="キャラクター">キャラクター</option>
+      <option value="ロリータ用語">ロリータ用語</option>
+      <option value="ファッションブランド">ファッションブランド</option>
+      <option value="コスメ・化粧品">コスメ・化粧品</option>
+      <option value="少女文学">少女文学</option>
+      <option value="アイドル・音楽">アイドル・音楽</option>
+      <option value="スイーツ">スイーツ</option>
+      <option value="原宿文化">原宿文化</option>
+      <option value="アクセサリー・香水">アクセサリー・香水</option>
+      <option value="少女漫画">少女漫画</option>
+      <option value="その他かわいいもの">その他かわいいもの</option>
     </select>
     <select id="select-question2">
-      <option value="1">文学</option>
-      <option value="2">科学</option>
-      <option value="3">地理・公民</option>
-      <option value="4">生活</option>
-      <option value="5">歴史</option>
-      <option value="6">言葉</option>
-      <option value="7">芸術・芸能</option>
-      <option value="8">スポーツ</option>
-      <option value="9">アニゲ</option>
-      <option value="10">ノンジャンル</option>
+      <option value="文学">文学</option>
+      <option value="科学">科学</option>
+      <option value="地理・公民">地理・公民</option>
+      <option value="生活">生活</option>
+      <option value="歴史">歴史</option>
+      <option value="言葉">言葉</option>
+      <option value="芸術・芸能">芸術・芸能</option>
+      <option value="スポーツ">スポーツ</option>
+      <option value="アニゲ">アニゲ</option>
+      <option value="ノンジャンル">ノンジャンル</option>
     </select>
   </div>
         <button class="confirm-button" onclick="confirmPlayerData(${i})">決定</button>
@@ -434,29 +436,6 @@
     localStorage.setItem(`player_${i}`, JSON.stringify(data));
   }
 }
-
-    function confirmPlayer(btn) {
-      const card = btn.closest(".card");
-      const rank = card.querySelector(".rank-input").value;
-      const school = card.querySelector(".school-input").value;
-      const name = card.querySelector(".name-input").value;
-      const info = card.querySelector(".display-info");
-      // 表示切り替え
-      info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
-      card.classList.add("show");
-
-      const index = Array.from(document.querySelectorAll(".card")).indexOf(card); // 何番目のカードか取得
-
-  // 保存対象データ
-       const playerData = {
-        name: name,
-        school: school,
-        rank: rank
-       };
-
-  // ローカルストレージに保存（例：player_0, player_1...）
-      localStorage.setItem(`player_${index}`, JSON.stringify(playerData));
-    }
     function confirmPlayerData(index) {
   const card = document.getElementById(`player-${index}`);
   const name = card.querySelector(".name-input").value;
@@ -465,7 +444,7 @@
   const rank = card.querySelector(".rank-input").value;
   const selectQuestion1 = document.getElementById("select-question1").value;
 const selectQuestion2 = document.getElementById("select-question2").value
- info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div>`;
+ info.innerHTML = `<div><strong>${name}</strong></div><div>${school}</div><div>${rank}位</div><div>${selectQuestion1}</div><div>${selectQuestion2}</div>`;
       card.classList.add("show");
 // localStorageから復元する（なければデフォルト）
     const data = JSON.parse(localStorage.getItem(`player_${index}`)) || {
