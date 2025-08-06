@@ -657,7 +657,7 @@
           
           const rows = text.trim().split("\n").map(r => r.split(","));
           initializeQuestionSelector(rows.length - 1); // 見出しがあれば -1
-          const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 1;
+          const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 0;
           if (index >= rows.length) return;
 
           const question = rows[index][1];
