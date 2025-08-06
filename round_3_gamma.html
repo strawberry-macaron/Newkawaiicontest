@@ -653,8 +653,8 @@
           const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 1;
           if (index >= rows.length) return;
 
-          const question = rows[index][2];
-          const answer = rows[index][3];
+          const question = rows[index][1];
+          const answer = rows[index][2];
 
           document.getElementById("question-number").textContent = `第${index}問`;
           document.getElementById("question-text").textContent = question;
