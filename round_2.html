@@ -257,11 +257,11 @@
   for (let i = 1; i <= totalQuestions; i++) {
     const option = document.createElement("option");
     option.value = i;
-    option.textContent = `第${index + 1}問`;
+    option.textContent = `第${i}問`;
     selector.appendChild(option);
   }
 
-  const current = parseInt(localStorage.getItem("currentQuestionNumber") || "1", 10);
+  const current = parseInt(localStorage.getItem("currentQuestionNumber") || "0", 10);
   selector.value = current;
 }
     document.getElementById("question-selector").addEventListener("change", function () {
@@ -524,7 +524,7 @@
           const rows = text.trim().split("\n").map(r => r.split(","));
           initializeQuestionSelector(rows.length - 1); // 
 
-          const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 1;
+          const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 0;
           if (index >= rows.length) return;
 
           const question = rows[index][1];
