@@ -247,7 +247,8 @@
   <div class="players" id="player-container"></div>
 
   <script>
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQauPJe0jkiS52L65yXobA_KJ2Hc4ri5WrObyHe4j88wEwjcxAKzGzaXmgYahuVmM-ix2imGAA8lNR4/pub?gid=0&single=true&output=csv";
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/1g5LOo3KL42sTI-CDwl2OsGkmZ3vI9eAbYKGjGXrYZnw/export?format=csv";
+
 
     let showQuestion = true;
     let showAnswer = true;
@@ -662,8 +663,8 @@ const selectQuestion2 = card.querySelector(".select-question2").value
           const index = parseInt(localStorage.getItem("currentQuestionNumber")) || 1;
           if (index >= rows.length) return;
 
-          const question = rows[index][2];
-          const answer = rows[index][3];
+          const question = rows[index][1];
+          const answer = rows[index][2];
 
           document.getElementById("question-number").textContent = `第${index}問`;
           document.getElementById("question-text").textContent = question;
